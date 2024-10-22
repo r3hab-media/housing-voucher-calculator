@@ -1,0 +1,22 @@
+select.form-select {
+	cursor: pointer;
+}
+
+.input-group .input-group-text span {
+	color: red;
+}
+
+.paymentStandard-container {
+	display: flex;
+	align-items: center;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+}
+
+.form-check {
+	justify-content: center;
+}
+
+.form-check-input {
+	margin: 0; /* Ensure there’s no extra spacing around the radio button */
+}
