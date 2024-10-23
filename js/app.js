@@ -196,27 +196,52 @@ const paymentStandards = {
 	},
 };
 
+// Map for Voucher Size display names
+const voucherSizeNames = {
+	0: "Studio",
+	1: "1",
+	2: "2",
+	3: "3",
+	4: "4",
+};
+
 // Display payment standard after Voucher Size and Zip Code are selected
 function displayPaymentStandard() {
-	const voucherSizeValue = document.getElementById("voucherSizeSelect").value;
-	const zipCode = document.getElementById("zipCodeSelect").value;
+	const voucherSizeSelect = document.getElementById("voucherSizeSelect");
+	const zipCodeSelect = document.getElementById("zipCodeSelect");
+	const voucherSizeValue = voucherSizeSelect.value;
+	const zipCode = zipCodeSelect.value;
 
-	if (voucherSizeValue && zipCode) {
+	// Check if both Voucher Size and Zip Code are selected
+	if (voucherSizeValue !== "" && zipCode !== "") {
 		const voucherSize = parseInt(voucherSizeValue);
 		const paymentStandard = paymentStandards[voucherSize]?.[zipCode];
 
-		// Display the payment standard
+		// Get the display names
+		const voucherSizeName = voucherSizeNames[voucherSize] || "Unknown";
+		const zipCodeName = zipCode;
+
+		// Display the selections and payment standard
 		if (paymentStandard === undefined) {
-			document.getElementById("paymentStandard").innerHTML = `<h6>For Payment Standard, please select the Voucher Size and Zip Code.</h6>`;
+			document.getElementById("paymentStandard").innerHTML = `
+              <h5>Voucher Size: ${voucherSizeName}</h5>
+              <h5>Zip Code: ${zipCodeName}</h5>
+              <h6>Payment Standard not available for selected Voucher Size and Zip Code.</h6>
+          `;
 		} else {
-			document.getElementById("paymentStandard").innerHTML = `<h5>Payment Standard: $${paymentStandard.toLocaleString("en-US", {
-				minimumFractionDigits: 0,
-				maximumFractionDigits: 0,
-			})}</h5>`;
+			document.getElementById("paymentStandard").innerHTML = `
+              <h5>Voucher Size: ${voucherSizeName}</h5>
+              <h5>Zip Code: ${zipCodeName}</h5>
+              <h5>Payment Standard: $${paymentStandard.toLocaleString("en-US", {
+								minimumFractionDigits: 0,
+								maximumFractionDigits: 0,
+							})}</h5>
+          `;
 		}
 	} else {
-		// Hide the payment standard or display a prompt
-		document.getElementById("paymentStandard").innerHTML = `<h6>For Payment Standard, please select the Voucher Size and Zip Code.</h6>`;
+		// One or both fields are not selected
+		// Do not display Voucher Size and Zip Code selections
+		document.getElementById("paymentStandard").innerHTML = `<h6>Please select both Voucher Size and Zip Code to see the Payment Standard.</h6>`;
 	}
 }
 
@@ -292,7 +317,7 @@ function calculateTTP() {
 	return TTP;
 }
 
-// Calculate affordability and display the result
+// Calculate affordability and display the result (unchanged)
 function calculateAffordability() {
 	const voucherSizeValue = document.getElementById("voucherSizeSelect").value;
 	const zipCode = document.getElementById("zipCodeSelect").value;
@@ -300,7 +325,7 @@ function calculateAffordability() {
 	const monthlyIncomeValue = document.getElementById("monthlyAdjustedIncome").value;
 
 	// Check if Voucher Size and Zip Code are selected
-	if (!voucherSizeValue || !zipCode) {
+	if (voucherSizeValue === "" || zipCode === "") {
 		// Cannot proceed without Voucher Size and Zip Code
 		displayPaymentStandard();
 		return;
@@ -309,7 +334,7 @@ function calculateAffordability() {
 	const voucherSize = parseInt(voucherSizeValue);
 	const paymentStandard = paymentStandards[voucherSize]?.[zipCode];
 
-	// Display the Payment Standard
+	// Display the Payment Standard and selections
 	displayPaymentStandard();
 
 	// If Contract Rent is not entered, hide Gross Rent, Tenant Payment, and Affordability
@@ -370,7 +395,7 @@ function calculateAffordability() {
       <h5><span class="${messageClass}">${affordabilityMessage}</span></h5>`;
 }
 
-// Attach event listeners to input fields and buttons
+// Attach event listeners to input fields and buttons (unchanged)
 document.getElementById("voucherSizeSelect").addEventListener("change", () => {
 	displayPaymentStandard();
 	calculateAffordability();
@@ -390,14 +415,14 @@ document.getElementById("contractRent").addEventListener("input", () => {
 	calculateAffordability();
 });
 
-// Attach utility radio and checkbox event listeners using event delegation
+// Attach utility radio and checkbox event listeners using event delegation (unchanged)
 document.addEventListener("change", function (e) {
 	if (e.target.matches('input[type="radio"], input[type="checkbox"]')) {
 		calculateAffordability();
 	}
 });
 
-// Initialize event listeners after DOM content loads
+// Initialize event listeners after DOM content loads (unchanged)
 document.addEventListener("DOMContentLoaded", () => {
 	displayPaymentStandard();
 	calculateAffordability();

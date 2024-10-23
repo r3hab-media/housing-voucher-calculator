@@ -25,7 +25,7 @@
         <div class="input-group mb-3">
           <label class="input-group-text" for="voucherSizeSelect">Voucher Size<span>*</span></label>
           <select class="form-select" id="voucherSizeSelect">
-            <option selected disabled>Choose...</option>
+            <option value="" selected disabled>Choose...</option>
             <option value="0">Studio</option>
             <option value="1">1</option>
             <option value="2">2</option>
@@ -39,7 +39,7 @@
         <div class="input-group mb-3">
           <label class="input-group-text" for="zipCodeSelect">Zip Codes<span>*</span></label>
           <select class="form-select" id="zipCodeSelect">
-            <option selected disabled>Choose...</option>
+            <option value="" selected disabled>Choose...</option>
             <option value="85250">85250</option>
             <option value="85251">85251</option>
             <option value="85253">85253</option>
@@ -86,7 +86,7 @@
       </div>
 
       <!-- Provider Tabs -->
-      <div class="col-12">
+      <div class="col-12" id="utilitySelection">
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <button class="nav-link active" id="nav-srp-tab" data-bs-toggle="tab" data-bs-target="#srp" type="button"
