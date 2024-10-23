@@ -19,19 +19,8 @@
       <div class="col-12">
         <h2>Housing Voucher Calculator</h2>
       </div>
-      <div class="col-12 m-0">
-        <div class="paymentStandard-container d-flex">
-          <div id="paymentStandard"></div>
-        </div>
-      </div>
 
       <!-- Input Fields -->
-      <div class="col-12 col-lg-6">
-        <div class="input-group mb-3">
-          <span class="input-group-text" id="contractRentLabel">Monthly Adjusted Income<span>*</span></span>
-          <input type="text" class="form-control is-currency" id="monthlyAdjustedIncome" placeholder="$0">
-        </div>
-      </div>
       <div class="col-12 col-lg-6">
         <div class="input-group mb-3">
           <label class="input-group-text" for="voucherSizeSelect">Voucher Size<span>*</span></label>
@@ -68,6 +57,19 @@
           </select>
         </div>
       </div>
+      
+      <div class="col-12 m-0">
+        <div class="paymentStandard-container d-flex">
+          <div id="paymentStandard"></div>
+        </div>
+      </div>      
+
+      <div class="col-12 col-lg-6">
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="contractRentLabel">Monthly Adjusted Income<span>*</span></span>
+          <input type="text" class="form-control is-currency" id="monthlyAdjustedIncome" placeholder="$0">
+        </div>
+      </div>      
 
       <div class="col-12 col-lg-6">
         <div class="input-group mb-3">
@@ -646,9 +648,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Calculate Button -->
-    <!-- <button class="btn btn-md btn-outline-primary mt-3" id="calculateRent">Calculate</button> -->
   </div>
 
   <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js'
