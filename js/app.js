@@ -11,30 +11,43 @@ document.addEventListener("focusout", function (e) {
 // Utility Allowances Data Structure
 const utilityAllowances = {
 	SRP: {
-		SFD: {
-			heating: { naturalGas: [32, 39, 41, 43, 48], electric: [11, 13, 15, 17, 18] },
-			cooking: { naturalGas: [6, 6, 11, 13, 17], electric: [4, 5, 8, 10, 12] },
-			waterHeating: { naturalGas: [15, 19, 26, 35, 43], electric: [12, 15, 19, 23, 27] },
-		},
 		MF: {
 			heating: { naturalGas: [26, 28, 30, 33, 35], electric: [6, 7, 9, 10, 11] },
 			cooking: { naturalGas: [7, 7, 12, 14, 19], electric: [4, 5, 8, 10, 12] },
 			waterHeating: { naturalGas: [14, 16, 23, 30, 37], electric: [10, 12, 15, 18, 21] },
 		},
+		SFD: {
+			heating: { naturalGas: [32, 39, 41, 43, 48], electric: [11, 13, 15, 17, 18] },
+			cooking: { naturalGas: [6, 6, 11, 13, 17], electric: [4, 5, 8, 10, 12] },
+			waterHeating: { naturalGas: [15, 19, 26, 35, 43], electric: [12, 15, 19, 23, 27] },
+		},
 	},
 	APS: {
-		SFD: {
-			heating: { naturalGas: [32, 39, 41, 43, 48], electric: [18, 22, 24, 27, 29] },
-			cooking: { naturalGas: [6, 6, 11, 13, 17], electric: [6, 7, 10, 14, 17] },
-			waterHeating: { naturalGas: [15, 19, 26, 35, 43], electric: [17, 20, 25, 31, 36] },
-		},
 		MF: {
 			heating: { naturalGas: [26, 28, 30, 33, 35], electric: [10, 12, 14, 16, 18] },
 			cooking: { naturalGas: [7, 7, 12, 14, 19], electric: [6, 7, 10, 14, 17] },
 			waterHeating: { naturalGas: [14, 16, 23, 30, 37], electric: [14, 16, 20, 25, 29] },
 		},
+		SFD: {
+			heating: { naturalGas: [32, 39, 41, 43, 48], electric: [18, 22, 24, 27, 29] },
+			cooking: { naturalGas: [6, 6, 11, 13, 17], electric: [6, 7, 10, 14, 17] },
+			waterHeating: { naturalGas: [15, 19, 26, 35, 43], electric: [17, 20, 25, 31, 36] },
+		},
 	},
 };
+
+// Utility Mapping Function
+function getUtilityKeyFromId(id) {
+	const idMap = {
+		ACon: "airConditioning",
+		Fridge: "refrigerator",
+		Micro: "rangeMicrowave",
+		Water: "water",
+		Sewer: "sewer",
+		Trash: "trash",
+	};
+	return idMap[id] || id.toLowerCase();
+}
 
 // Base fees for SRP and APS based on voucher size
 const baseFees = {
@@ -51,12 +64,40 @@ const baseFees = {
 // Additional utilities (i.e.; Trash, Water, Sewer, etc.)
 const additionalUtilities = {
 	SRP: {
-		SFD: { water: [29, 29, 32, 37, 42], sewer: [18, 18, 23, 28, 32], trash: [28, 28, 28, 28, 28] },
-		MF: { water: [29, 29, 32, 37, 42], sewer: [18, 18, 23, 28, 32], trash: [28, 28, 28, 28, 28] },
+		MF: {
+			water: [29, 29, 32, 37, 42],
+			sewer: [18, 18, 23, 28, 32],
+			trash: [28, 28, 28, 28, 28],
+			airConditioning: [18, 21, 29, 37, 45],
+			refrigerator: [12, 12, 12, 12, 12],
+			rangeMicrowave: [11, 11, 11, 11, 11],
+		},
+		SFD: {
+			water: [29, 29, 32, 37, 42],
+			sewer: [18, 18, 23, 28, 32],
+			trash: [28, 28, 28, 28, 28],
+			airConditioning: [14, 16, 36, 57, 77],
+			refrigerator: [12, 12, 12, 12, 12],
+			rangeMicrowave: [11, 11, 11, 11, 11],
+		},
 	},
 	APS: {
-		SFD: { water: [29, 29, 32, 37, 42], sewer: [18, 18, 23, 28, 32], trash: [28, 28, 28, 28, 28] },
-		MF: { water: [29, 29, 32, 37, 42], sewer: [18, 18, 23, 28, 32], trash: [28, 28, 28, 28, 28] },
+		MF: {
+			water: [29, 29, 32, 37, 42],
+			sewer: [18, 18, 23, 28, 32],
+			trash: [28, 28, 28, 28, 28],
+			airConditioning: [21, 25, 34, 44, 54],
+			refrigerator: [12, 12, 12, 12, 12],
+			rangeMicrowave: [11, 11, 11, 11, 11],
+		},
+		SFD: {
+			water: [29, 29, 32, 37, 42],
+			sewer: [18, 18, 23, 28, 32],
+			trash: [28, 28, 28, 28, 28],
+			airConditioning: [16, 19, 43, 67, 98],
+			refrigerator: [12, 12, 12, 12, 12],
+			rangeMicrowave: [11, 11, 11, 11, 11],
+		},
 	},
 };
 
@@ -274,9 +315,12 @@ function calculateAffordability() {
 	});
 
 	// Add additional utility costs based on selected checkboxes
-	document.querySelectorAll('.tab-pane.active input[type="checkbox"]:checked').forEach((checkbox) => {
-		const utilityId = checkbox.id.split("_").slice(2).join("_").toLowerCase();
-		totalUtilityCosts += additionalUtilities[provider][unitType][utilityId]?.[voucherSize] || 0;
+	const activeTabInputs = document.querySelectorAll('.tab-pane.active input[type="checkbox"]:checked');
+	const isAnyUtilitySelected = activeTabInputs.length > 0 || Object.values(selectedFuelTypes).some((value) => value !== "none");
+	activeTabInputs.forEach((checkbox) => {
+		const utilityId = checkbox.id.split("_").slice(2).join("_");
+		const utilityKey = getUtilityKeyFromId(utilityId);
+		totalUtilityCosts += additionalUtilities[provider][unitType][utilityKey]?.[voucherSize] || 0;
 	});
 
 	// Calculate the base and voucher size fees
@@ -304,16 +348,25 @@ function calculateAffordability() {
 	// Clear previous appended results
 	displayPaymentStandard(); // Refresh the basic information
 
-	// Display all calculated values
-	document.getElementById("paymentStandard").innerHTML += `
-        <h5>Base Fee: $${baseFee.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
-        <h5>Other Electric: $${voucherSizeFee.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
-        <h5>Total Utilities: $${totalUtilityCosts.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
-        <h5>Gross Rent (including utilities): $${grossRent.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
-        <h5>Tenant Payment: $${tenantPayment.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
-        <h5><span class="${isAffordable ? "text-success" : "text-danger"}">
-            ${isAffordable ? "Unit is affordable." : "Unit is unaffordable."}
-        </span></h5>`;
+	// Display calculated values only if at least one utility is selected
+	let additionalInfoHTML = "";
+	if (isAnyUtilitySelected) {
+		additionalInfoHTML += `
+          <h5>Base Fee: $${baseFee.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
+          <h5>Other Electric: $${voucherSizeFee.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
+          <h5>Total Utilities: $${totalUtilityCosts.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
+          <h5>Gross Rent (including utilities): $${grossRent.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
+      `;
+	}
+
+	additionalInfoHTML += `
+      <h5>Tenant Payment: $${tenantPayment.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
+      <h5><span class="${isAffordable ? "text-success" : "text-danger"}">
+          ${isAffordable ? "Unit is affordable." : "Unit is unaffordable."}
+      </span></h5>
+  `;
+
+	document.getElementById("paymentStandard").innerHTML += additionalInfoHTML;
 }
 
 // Attach event listeners
