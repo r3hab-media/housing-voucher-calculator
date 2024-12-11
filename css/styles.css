@@ -13,10 +13,19 @@ select.form-select {
 	margin-bottom: 1rem;
 }
 
-.form-check {
-	justify-content: center;
+#printForm {
+  display: none;
 }
 
-.form-check-input {
-	margin: 0; /* Ensure there’s no extra spacing around the radio button */
+/* Print CSS */
+@media print {
+	.form-inputs,
+	.make-select,
+	#electricUtilities,
+	#additionalUtilities,
+	#startOver,
+	#printForm,
+  #backToTop {
+		display: none !important;
+	}
 }

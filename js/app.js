@@ -86,7 +86,7 @@ const additionalUtilities = ["SRP", "APS"].reduce((result, provider) => {
 	return result;
 }, {});
 
-console.log(additionalUtilities);
+// console.log(additionalUtilities);
 
 // Payment standards based on voucher size and zip code
 const paymentStandards = {
@@ -221,7 +221,7 @@ function displayPaymentStandard() {
       <h5>Zip Code: ${zipCode}</h5>
       <h5>Payment Standard: $${paymentStandard}</h5>`;
 	} else {
-		document.getElementById("paymentStandard").innerHTML = `<h6>Please select both Voucher Size and Zip Code.</h6>`;
+		document.getElementById("paymentStandard").innerHTML = `<h6 class="make-select">Please select both Voucher Size and Zip Code.</h6>`;
 	}
 }
 
@@ -305,6 +305,13 @@ function calculateAffordability() {
 		}
 	});
 
+	// Include "Other Electric" fee if selected
+	const otherElectricCheckbox = document.getElementById("Util_otherElectric");
+	if (otherElectricCheckbox && otherElectricCheckbox.checked) {
+		const otherElectricFee = baseFees[provider]?.[unitType]?.voucherSizeFees[voucherSize] || 0;
+		totalUtilityCosts += otherElectricFee;
+	}
+
 	// Calculate gross rent and tenant payment
 	const grossRent = contractRent + totalUtilityCosts;
 	let tenantPayment = calculateTTP();
@@ -362,10 +369,10 @@ function updateOtherElectric() {
 	const voucherSizeValue = document.getElementById("voucherSizeSelect").value;
 
 	// Ensure a voucher size is selected
-	if (!voucherSizeValue) {
-		document.getElementById("otherElectric").textContent = ""; // Clear if not selected
-		return;
-	}
+	// if (!voucherSizeValue) {
+	// 	document.getElementById("otherElectric").textContent = ""; // Clear if not selected
+	// 	return;
+	// }
 
 	const voucherSize = parseInt(voucherSizeValue);
 
@@ -381,16 +388,16 @@ function updateOtherElectric() {
 	const isAnyRelevantSelected = relevantSelectors.some((selector) => document.querySelector(selector));
 
 	// If no relevant checkbox is selected, clear the `otherElectric` span
-	if (!isAnyRelevantSelected) {
-		document.getElementById("otherElectric").textContent = "";
-		return;
-	}
+	// if (!isAnyRelevantSelected) {
+	// 	document.getElementById("otherElectric").textContent = "";
+	// 	return;
+	// }
 
 	// Calculate the other electric fee if relevant inputs are selected
-	const otherElectricFee = baseFees[provider]?.[unitType]?.voucherSizeFees[voucherSize] || 0;
+	// const otherElectricFee = baseFees[provider]?.[unitType]?.voucherSizeFees[voucherSize] || 0;
 
-	// Update the `otherElectric` span in the DOM
-	document.getElementById("otherElectric").textContent = `$${otherElectricFee.toLocaleString()}`;
+	// // Update the `otherElectric` span in the DOM
+	// document.getElementById("otherElectric").textContent = `$${otherElectricFee.toLocaleString()}`;
 }
 
 // Attach event listeners and initialize on DOMContentLoaded
@@ -413,6 +420,8 @@ const relevantInputs = [
 relevantInputs.forEach((input) => {
 	input.addEventListener("change", updateOtherElectric);
 });
+
+document.getElementById("Util_otherElectric").addEventListener("change", calculateAffordability);
 
 // Attach event listeners to dynamically update `otherElectric`
 document.getElementById("voucherSizeSelect").addEventListener("change", updateOtherElectric);
@@ -467,3 +476,43 @@ document.addEventListener("DOMContentLoaded", () => {
 	displayPaymentStandard();
 	calculateAffordability();
 });
+
+function displayPrintButton() {
+  // Select the required inputs
+  let requiredInputs = document.querySelectorAll('#voucherSizeSelect, #zipCodeSelect, #monthlyAdjustedIncome, #contractRent');
+  let allFilled = true;
+
+  // Check if all required inputs have values
+  requiredInputs.forEach(input => {
+      if (!input.value || input.value.trim() === '') {
+          allFilled = false;
+      }
+  });
+
+  // Get the print button
+  const printButton = document.getElementById('printForm');
+
+  // Show or hide the button based on whether all inputs are filled
+  if (allFilled) {
+      printButton.style.display = 'flex';
+  } else {
+      printButton.style.display = 'none';
+  }
+}
+
+document.querySelectorAll('#voucherSizeSelect, #zipCodeSelect, #monthlyAdjustedIncome, #contractRent')
+    .forEach(input => {
+        input.addEventListener('input', displayPrintButton);
+    });
+
+// Call the function initially to set the correct button visibility
+displayPrintButton();
+
+
+
+document.getElementById("printForm").addEventListener("click", () => {
+  window.print();
+});
+
+
+//window.addEventListener("afterprint", () => self.close);

@@ -8,18 +8,19 @@
   <title>Housing Calculator App</title>
 
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css'>
+  <link rel="stylesheet" href="css/styles.css">
   <script src="js/app.js" defer></script>
 </head>
 
 <body>
-  <div class="container p-3">
+  <div class="container p-3" id="top">
     <div class="row">
       <div class="col-12">
         <h2>Housing Voucher Calculator</h2>
       </div>
 
       <!-- Input Fields -->
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6 form-inputs">
         <div class="input-group mb-3">
           <label class="input-group-text" for="voucherSizeSelect">Voucher Size<span>*</span></label>
           <select class="form-select" id="voucherSizeSelect">
@@ -33,7 +34,7 @@
         </div>
       </div>
 
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6 form-inputs">
         <div class="input-group mb-3">
           <label class="input-group-text" for="zipCodeSelect">Zip Codes<span>*</span></label>
           <select class="form-select" id="zipCodeSelect">
@@ -62,21 +63,21 @@
         </div>
       </div>
 
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6 form-inputs">
         <div class="input-group mb-3">
           <span class="input-group-text" id="contractRentLabel">Monthly Adjusted Income<span>*</span></span>
           <input type="text" class="form-control is-currency" id="monthlyAdjustedIncome" placeholder="$0">
         </div>
       </div>
 
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6 form-inputs">
         <div class="input-group mb-3">
           <span class="input-group-text">Total Tenant Payment<span>*</span></span>
           <input type="text" class="form-control is-currency" id="totalTenantPayment" placeholder="$0" readonly>
         </div>
       </div>
 
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6 form-inputs">
         <div class="input-group mb-3">
           <span class="input-group-text" id="contractRentLabel">Contract Rent<span>*</span></span>
           <input type="text" class="form-control is-currency" id="contractRent" placeholder="$0">
@@ -91,6 +92,8 @@
               role="tab" aria-controls="srp" aria-selected="true">SRP</button>
             <button class="nav-link" id="nav-aps-tab" data-bs-toggle="tab" data-bs-target="#aps" type="button"
               role="tab" aria-controls="aps" aria-selected="false" tabindex="-1">APS</button>
+            <button class="nav-link" id="nav-sw-tab" data-bs-toggle="tab" data-bs-target="#sw" type="button" role="tab"
+              aria-controls="sw" aria-selected="true">Southwest Gas</button>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
@@ -116,7 +119,7 @@
               <div class="tab-pane fade show active" id="pills-srp-sfd" role="tabpanel"
                 aria-labelledby="pills-srp-sfd-tab" tabindex="0">
                 <div class="col-12 col-xl-8">
-                  <h6 class="mt-5">SRP Utility Table (Single Family Detached)</h6>
+                  <h6 class="mt-5">SRP Utilities (Single Family Detached)</h6>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -166,7 +169,7 @@
               <div class="tab-pane fade" id="pills-srp-mf" role="tabpanel" aria-labelledby="pills-srp-mf-tab"
                 tabindex="0">
                 <div class="col-12 col-xl-8">
-                  <h6 class="mt-5">SRP Utility Table (Multifamily/Apartment)</h6>
+                  <h6 class="mt-5">SRP Utilities (Multifamily/Apartment)</h6>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -236,7 +239,7 @@
               <div class="tab-pane fade show active" id="pills-aps-sfd" role="tabpanel"
                 aria-labelledby="pills-aps-sfd-tab" tabindex="0">
                 <div class="col-12 col-xl-8">
-                  <h6 class="mt-5">APS Utility Table (Single Family Detached)</h6>
+                  <h6 class="mt-5">APS Utilities (Single Family Detached)</h6>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -285,7 +288,7 @@
               <div class="tab-pane fade" id="pills-aps-mf" role="tabpanel" aria-labelledby="pills-aps-mf-tab"
                 tabindex="0">
                 <div class="col-12 col-xl-8">
-                  <h6 class="mt-5">APS Utility Table (Multifamily/Apartment)</h6>
+                  <h6 class="mt-5">APS Utilities (Multifamily/Apartment)</h6>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -332,17 +335,9 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="col-12 mt-5" id="gasUtilities">
-        <nav>
-          <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-sw-tab" data-bs-toggle="tab" data-bs-target="#sw" type="button"
-              role="tab" aria-controls="sw" aria-selected="true">Southwest Gas</button>
-          </div>
-        </nav>
-        <div class="tab-content" id="nav-tabContent">
-          <div class="tab-pane fade show active" id="sw" role="tabpanel" aria-labelledby="nav-sw-tab" tabindex="0">
+
+          <!-- Southwest Gas Pane -->
+          <div class="tab-pane fade" id="sw" role="tabpanel" aria-labelledby="nav-sw-tab" tabindex="0">
             <h6 class="mt-3">Which of the utilities below are the family's responsibility to pay?</h6>
             <ul class="nav nav-pills mt-3" id="pills-sw-tab" role="tablist">
               <li class="nav-item" role="presentation">
@@ -362,7 +357,7 @@
               <div class="tab-pane fade show active" id="pills-sw-sfd" role="tabpanel"
                 aria-labelledby="pills-sw-sfd-tab" tabindex="0">
                 <div class="col-12 col-xl-8">
-                  <h6 class="mt-5">Single Family Detached</h6>
+                  <h6 class="mt-5">Southwest Gas Utilities (Single Family Detached)</h6>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -412,7 +407,7 @@
               <div class="tab-pane fade" id="pills-sw-mf" role="tabpanel" aria-labelledby="pills-sw-mf-tab"
                 tabindex="0">
                 <div class="col-12 col-xl-8">
-                  <h6 class="mt-5">Multifamily/Apartment</h6>
+                  <h6 class="mt-5">Southwest Gas Utilities (Multifamily/Apartment)</h6>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -472,8 +467,16 @@
                 <td>
                   <div class="form-check d-flex align-items-center justify-content-start">
                     <input class="form-check-input" type="checkbox" value="" id="Util_ACon">
-                    <label class="form-check-label ms-2" for="Util_ACon">
-                      Air Conditioning, <span id="otherElectric"></span>
+                    <label class="form-check-label ms-2 fw-bold" for="Util_ACon">
+                      Air Conditioning
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-check d-flex align-items-center justify-content-start">
+                    <input type="checkbox" class="form-check-input" value="" id="Util_otherElectric">
+                    <label for="Util_otherElectric" class="form-check-label ms-2 fw-bold">
+                      Other Electric (Outlets, Lights, etc.)
                     </label>
                   </div>
                 </td>
@@ -484,12 +487,12 @@
         <div class="table-responsive">
           <table class="table table-striped">
             <thead></thead>
-            <tbody>              
+            <tbody>
               <tr>
                 <td>
                   <div class="form-check d-flex align-items-center justify-content-start">
                     <input class="form-check-input" type="checkbox" value="" id="Util_Water">
-                    <label class="form-check-label ms-2" for="Util_Water">
+                    <label class="form-check-label ms-2 fw-bold" for="Util_Water">
                       Water
                     </label>
                   </div>
@@ -497,7 +500,7 @@
                 <td>
                   <div class="form-check d-flex align-items-center justify-content-start">
                     <input class="form-check-input" type="checkbox" value="" id="Util_Sewer">
-                    <label class="form-check-label ms-2" for="Util_Sewer">
+                    <label class="form-check-label ms-2 fw-bold" for="Util_Sewer">
                       Sewer
                     </label>
                   </div>
@@ -505,7 +508,7 @@
                 <td>
                   <div class="form-check d-flex align-items-center justify-content-start">
                     <input class="form-check-input" type="checkbox" value="" id="Util_Trash">
-                    <label class="form-check-label ms-2" for="Util_Trash">
+                    <label class="form-check-label ms-2 fw-bold" for="Util_Trash">
                       Trash
                     </label>
                   </div>
@@ -515,7 +518,7 @@
                 <td>
                   <div class="form-check d-flex align-items-center justify-content-start">
                     <input class="form-check-input" type="checkbox" value="" id="Util_Fridge">
-                    <label class="form-check-label ms-2" for="Util_Fridge">
+                    <label class="form-check-label ms-2 fw-bold" for="Util_Fridge">
                       Refrigerator
                     </label>
                   </div>
@@ -523,18 +526,23 @@
                 <td>
                   <div class="form-check d-flex align-items-center justify-content-start">
                     <input class="form-check-input" type="checkbox" value="" id="Util_Micro">
-                    <label class="form-check-label ms-2" for="Util_Micro">
+                    <label class="form-check-label ms-2 fw-bold" for="Util_Micro">
                       Range/Microwave
                     </label>
                   </div>
                 </td>
+                <td></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-    <button class="btn btn-md btn-outline-primary" id="startOver">Start Over</button>
+    <div class="d-flex">
+      <a href="#top" class="btn btn-md btn-outline-primary" id="startOver">Start Over</a>
+      <button class="btn btn-md btn-outline-primary ms-2" id="printForm">Print</button>
+    </div>
+
   </div>
 
   <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js'
