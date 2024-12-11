@@ -1,13 +1,6 @@
 // Constants for calculations
 const MAX_AFFORDABLE_PERCENT = 0.401; // 40.1%
 
-// Attach event listeners to format currency inputs on blur
-document.addEventListener("focusout", function (e) {
-	if (e.target.classList.contains("is-currency")) {
-		formatCurrencyInput(e.target);
-	}
-});
-
 // Utility Allowances Data Structure
 const utilityAllowances = {
 	SRP: {
@@ -34,20 +27,19 @@ const utilityAllowances = {
 			waterHeating: { naturalGas: [15, 19, 26, 35, 43], electric: [17, 20, 25, 31, 36] },
 		},
 	},
+	SW: {
+		MF: {
+			heating: { naturalGas: [26, 28, 30, 33, 35] },
+			cooking: { naturalGas: [7, 7, 12, 14, 19] },
+			waterHeating: { naturalGas: [14, 16, 23, 30, 37] },
+		},
+		SFD: {
+			heating: { naturalGas: [32, 39, 41, 43, 48] },
+			cooking: { naturalGas: [6, 6, 11, 13, 17] },
+			waterHeating: { naturalGas: [15, 19, 26, 35, 43] },
+		},
+	},
 };
-
-// Utility Mapping Function
-function getUtilityKeyFromId(id) {
-	const idMap = {
-		ACon: "airConditioning",
-		Fridge: "refrigerator",
-		Micro: "rangeMicrowave",
-		Water: "water",
-		Sewer: "sewer",
-		Trash: "trash",
-	};
-	return idMap[id] || id.toLowerCase();
-}
 
 // Base fees for SRP and APS based on voucher size
 const baseFees = {
@@ -61,45 +53,40 @@ const baseFees = {
 	},
 };
 
-// Additional utilities (i.e.; Trash, Water, Sewer, etc.)
-const additionalUtilities = {
+// Consolidated values for additional utilities
+const baseAdditionalUtilities = {
+	water: [29, 29, 32, 37, 42],
+	sewer: [18, 18, 23, 28, 32],
+	trash: [28, 28, 28, 28, 28],
+	refrigerator: [12, 12, 12, 12, 12],
+	rangeMicrowave: [11, 11, 11, 11, 11],
+};
+
+// Specific overrides for air conditioning
+const airConditioningOverrides = {
 	SRP: {
-		MF: {
-			water: [29, 29, 32, 37, 42],
-			sewer: [18, 18, 23, 28, 32],
-			trash: [28, 28, 28, 28, 28],
-			airConditioning: [18, 21, 29, 37, 45],
-			refrigerator: [12, 12, 12, 12, 12],
-			rangeMicrowave: [11, 11, 11, 11, 11],
-		},
-		SFD: {
-			water: [29, 29, 32, 37, 42],
-			sewer: [18, 18, 23, 28, 32],
-			trash: [28, 28, 28, 28, 28],
-			airConditioning: [14, 16, 36, 57, 77],
-			refrigerator: [12, 12, 12, 12, 12],
-			rangeMicrowave: [11, 11, 11, 11, 11],
-		},
+		MF: [18, 21, 29, 37, 45],
+		SFD: [14, 16, 36, 57, 77],
 	},
 	APS: {
-		MF: {
-			water: [29, 29, 32, 37, 42],
-			sewer: [18, 18, 23, 28, 32],
-			trash: [28, 28, 28, 28, 28],
-			airConditioning: [21, 25, 34, 44, 54],
-			refrigerator: [12, 12, 12, 12, 12],
-			rangeMicrowave: [11, 11, 11, 11, 11],
-		},
-		SFD: {
-			water: [29, 29, 32, 37, 42],
-			sewer: [18, 18, 23, 28, 32],
-			trash: [28, 28, 28, 28, 28],
-			airConditioning: [16, 19, 43, 67, 98],
-			refrigerator: [12, 12, 12, 12, 12],
-			rangeMicrowave: [11, 11, 11, 11, 11],
-		},
+		MF: [21, 25, 34, 44, 54],
+		SFD: [16, 19, 43, 67, 98],
 	},
 };
+
+// Generate additional utilities dynamically
+const additionalUtilities = ["SRP", "APS"].reduce((result, provider) => {
+	result[provider] = ["MF", "SFD"].reduce((unitTypes, unitType) => {
+		unitTypes[unitType] = {
+			...baseAdditionalUtilities,
+			airConditioning: airConditioningOverrides[provider][unitType],
+		};
+		return unitTypes;
+	}, {});
+	return result;
+}, {});
+
+console.log(additionalUtilities);
 
 // Payment standards based on voucher size and zip code
 const paymentStandards = {
@@ -194,40 +181,9 @@ const voucherSizeNames = {
 	4: "4",
 };
 
-// Detect tab switch and update the base fee accordingly
-document.querySelectorAll('button[data-bs-toggle="tab"]').forEach((tab) => {
-	tab.addEventListener("shown.bs.tab", () => {
-		displayPaymentStandard();
-		calculateAffordability();
-	});
-});
-
-// Helper functions
-function getActiveProvider() {
-	return document.querySelector(".nav-tabs .nav-link.active").id.includes("srp") ? "SRP" : "APS";
-}
-
-function getFlatFee(provider, unitType) {
-	return baseFees[provider][unitType]?.flatFee || 0;
-}
-
-function getVoucherSizeFee(provider, unitType, voucherSize) {
-	return baseFees[provider][unitType]?.voucherSizeFees[voucherSize] || 0;
-}
-
-function displayPaymentStandard() {
-	const voucherSizeValue = document.getElementById("voucherSizeSelect").value;
-	const zipCode = document.getElementById("zipCodeSelect").value;
-
-	if (voucherSizeValue && zipCode) {
-		const paymentStandard = paymentStandards[voucherSizeValue]?.[zipCode] || "Not available";
-		document.getElementById("paymentStandard").innerHTML = `
-          <h5>Voucher Size: ${voucherSizeValue}</h5>
-          <h5>Zip Code: ${zipCode}</h5>
-          <h5>Payment Standard: $${paymentStandard}</h5>`;
-	} else {
-		document.getElementById("paymentStandard").innerHTML = `<h6>Please select both Voucher Size and Zip Code.</h6>`;
-	}
+// Parse currency input to numeric values
+function parseCurrency(value) {
+	return parseInt(value.replace(/[^0-9.-]+/g, "")) || 0;
 }
 
 // Format currency input
@@ -246,39 +202,63 @@ function formatCurrencyInput(input) {
 	}
 }
 
-// Parse currency input to numeric values
-function parseCurrency(value) {
-	return parseInt(value.replace(/[^0-9.-]+/g, "")) || 0;
+// Add DOMContentLoaded event listener for initializing functions
+document.addEventListener("DOMContentLoaded", () => {
+	displayPaymentStandard(); // Existing function
+	calculateAffordability(); // Existing function
+	enforceSingleSelection(); // Newly added function
+});
+
+// Display payment standard
+function displayPaymentStandard() {
+	const voucherSizeValue = document.getElementById("voucherSizeSelect").value;
+	const zipCode = document.getElementById("zipCodeSelect").value;
+
+	if (voucherSizeValue && zipCode) {
+		const paymentStandard = paymentStandards[voucherSizeValue]?.[zipCode] || "Not available";
+		document.getElementById("paymentStandard").innerHTML = `
+      <h5>Voucher Size: ${voucherSizeNames[voucherSizeValue]}</h5>
+      <h5>Zip Code: ${zipCode}</h5>
+      <h5>Payment Standard: $${paymentStandard}</h5>`;
+	} else {
+		document.getElementById("paymentStandard").innerHTML = `<h6>Please select both Voucher Size and Zip Code.</h6>`;
+	}
 }
 
-// Get utility cost based on selections
-function getUtilityCost(provider, unitType, utilityType, fuelType, voucherSize) {
-	const allowances = utilityAllowances[provider][unitType][utilityType][fuelType];
-	return allowances?.[voucherSize] || 0;
+// Get active provider
+function getActiveProvider() {
+	const activeTab = document.querySelector(".nav-tabs .nav-link.active");
+	if (activeTab.id.includes("srp")) return "SRP";
+	if (activeTab.id.includes("aps")) return "APS";
+	return "SW";
 }
 
-// Get selected fuel types for each utility
-function getSelectedFuelTypes(provider, unitType) {
-	const utilities = ["heating", "cooking", "waterHeating"];
-	const selectedFuelTypes = {};
-
-	utilities.forEach((utility) => {
-		const radios = document.getElementsByName(`${provider}_${unitType}_${utility}`);
-		selectedFuelTypes[utility] = Array.from(radios).find((radio) => radio.checked)?.value || "none";
-	});
-
-	return selectedFuelTypes;
+// Map input IDs to utility keys
+function getUtilityKeyFromId(id) {
+	const idMap = {
+		ACon: "airConditioning",
+		Fridge: "refrigerator",
+		Micro: "rangeMicrowave",
+		Water: "water",
+		Sewer: "sewer",
+		Trash: "trash",
+	};
+	return idMap[id] || id.toLowerCase();
 }
 
+// Calculate Total Tenant Payment (TTP)
 function calculateTTP() {
-	const income = parseInt(document.getElementById("monthlyAdjustedIncome").value.replace(/\D/g, "")) || 0;
+	const income = parseCurrency(document.getElementById("monthlyAdjustedIncome").value || "0");
 	const TTP = Math.round(income * 0.3);
-	document.getElementById("totalTenantPayment").value = `$${TTP.toLocaleString()}`;
+	document.getElementById("totalTenantPayment").value = `$${TTP.toLocaleString("en-US", {
+		minimumFractionDigits: 0,
+	})}`;
 	return TTP;
 }
 
+// Calculate affordability
 function calculateAffordability() {
-	const provider = getActiveProvider();
+	const provider = getActiveProvider(); // SRP, APS, or SW
 	const unitType = document.querySelector(".tab-pane.active .nav-pills .nav-link.active").id.includes("sfd") ? "SFD" : "MF";
 
 	const voucherSizeValue = document.getElementById("voucherSizeSelect").value;
@@ -296,39 +276,34 @@ function calculateAffordability() {
 	const paymentStandard = paymentStandards[voucherSize]?.[zipCode] || 0;
 
 	// Ensure Monthly Adjusted Income and Contract Rent are provided
-	if (!monthlyIncomeValue || !contractRentValue) {
-		return;
-	}
+	if (!monthlyIncomeValue || !contractRentValue) return;
 
 	const contractRent = parseCurrency(contractRentValue);
 	const monthlyIncome = parseCurrency(monthlyIncomeValue);
 
 	let totalUtilityCosts = 0;
 
-	// Get selected fuel types and calculate utility costs
-	const selectedFuelTypes = getSelectedFuelTypes(provider, unitType);
-	["heating", "cooking", "waterHeating"].forEach((utility) => {
-		const fuelType = selectedFuelTypes[utility];
-		if (fuelType !== "none") {
-			totalUtilityCosts += getUtilityCost(provider, unitType, utility, fuelType, voucherSize);
+	// Calculate costs for main utilities (heating, cooking, water heating)
+	const utilityCheckboxes = document.querySelectorAll('.tab-pane.active input[type="checkbox"]:checked');
+	utilityCheckboxes.forEach((checkbox) => {
+		const utilityType = checkbox.name.split("_")[2]; // Extract utility type from name attribute
+		const fuelType = checkbox.value; // Extract fuel type
+
+		if (utilityAllowances[provider][unitType][utilityType]?.[fuelType]) {
+			totalUtilityCosts += utilityAllowances[provider][unitType][utilityType][fuelType][voucherSize] || 0;
 		}
 	});
 
-	// Add additional utility costs based on selected checkboxes
-	const activeTabInputs = document.querySelectorAll('.tab-pane.active input[type="checkbox"]:checked');
-	const isAnyUtilitySelected = activeTabInputs.length > 0 || Object.values(selectedFuelTypes).some((value) => value !== "none");
-	activeTabInputs.forEach((checkbox) => {
-		const utilityId = checkbox.id.split("_").slice(2).join("_");
-		const utilityKey = getUtilityKeyFromId(utilityId);
-		totalUtilityCosts += additionalUtilities[provider][unitType][utilityKey]?.[voucherSize] || 0;
+	// Calculate costs for additional utilities (water, sewer, trash, etc.)
+	const additionalUtilityCheckboxes = document.querySelectorAll('#additionalUtilities input[type="checkbox"]:checked');
+	additionalUtilityCheckboxes.forEach((checkbox) => {
+		const utilityKey = getUtilityKeyFromId(checkbox.id.split("_")[1]); // Extract utility key (e.g., water, sewer, etc.)
+		const additionalCosts = additionalUtilities[provider]?.[unitType]?.[utilityKey] || baseAdditionalUtilities[utilityKey];
+
+		if (additionalCosts) {
+			totalUtilityCosts += additionalCosts[voucherSize] || 0;
+		}
 	});
-
-	// Calculate the base and voucher size fees
-	const baseFee = getFlatFee(provider, unitType);
-	const voucherSizeFee = getVoucherSizeFee(provider, unitType, voucherSize);
-
-	// Update total utility costs with both fees
-	totalUtilityCosts += baseFee + voucherSizeFee;
 
 	// Calculate gross rent and tenant payment
 	const grossRent = contractRent + totalUtilityCosts;
@@ -345,34 +320,125 @@ function calculateAffordability() {
 	const maxAffordable = monthlyIncome * MAX_AFFORDABLE_PERCENT;
 	const isAffordable = tenantPayment <= maxAffordable;
 
-	// Clear previous appended results
-	displayPaymentStandard(); // Refresh the basic information
-
-	// Display calculated values only if at least one utility is selected
-	let additionalInfoHTML = "";
-	if (isAnyUtilitySelected) {
-		additionalInfoHTML += `
-          <h5>Base Fee: $${baseFee.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
-          <h5>Other Electric: $${voucherSizeFee.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
-          <h5>Total Utilities: $${totalUtilityCosts.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
-          <h5>Gross Rent (including utilities): $${grossRent.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
-      `;
-	}
-
-	additionalInfoHTML += `
-      <h5>Tenant Payment: $${tenantPayment.toLocaleString("en-US", { minimumFractionDigits: 0 })}</h5>
-      <h5><span class="${isAffordable ? "text-success" : "text-danger"}">
-          ${isAffordable ? "Unit is affordable." : "Unit is unaffordable."}
-      </span></h5>
-  `;
-
-	document.getElementById("paymentStandard").innerHTML += additionalInfoHTML;
+	// Display calculated values
+	displayPaymentStandard();
+	const resultsHTML = `
+    <h5>Total Utilities: $${totalUtilityCosts.toLocaleString()}</h5>
+    <h5>Gross Rent (including utilities): $${grossRent.toLocaleString()}</h5>
+    <h5>Tenant Payment: $${tenantPayment.toLocaleString()}</h5>
+    <h5><span class="${isAffordable ? "text-success" : "text-danger"}">
+        ${isAffordable ? "Unit is affordable." : "Unit is unaffordable."}
+    </span></h5>`;
+	document.getElementById("paymentStandard").innerHTML += resultsHTML;
 }
 
-// Attach event listeners
+// Function to enforce single selection for heating, cooking, and water heating
+function enforceSingleSelection() {
+	const utilityGroups = ["heating", "cooking", "waterHeating"];
+
+	utilityGroups.forEach((group) => {
+		const checkboxes = document.querySelectorAll(`input[name*="_${group}"]`);
+		checkboxes.forEach((checkbox) => {
+			checkbox.addEventListener("change", () => {
+				if (checkbox.checked) {
+					checkboxes.forEach((otherCheckbox) => {
+						if (otherCheckbox !== checkbox) {
+							otherCheckbox.disabled = true;
+						}
+					});
+				} else {
+					checkboxes.forEach((otherCheckbox) => {
+						otherCheckbox.disabled = false;
+					});
+				}
+			});
+		});
+	});
+}
+
+function updateOtherElectric() {
+	const provider = getActiveProvider(); // Get active provider (SRP, APS, SW)
+	const unitType = document.querySelector(".tab-pane.active .nav-pills .nav-link.active").id.includes("sfd") ? "SFD" : "MF";
+	const voucherSizeValue = document.getElementById("voucherSizeSelect").value;
+
+	// Ensure a voucher size is selected
+	if (!voucherSizeValue) {
+		document.getElementById("otherElectric").textContent = ""; // Clear if not selected
+		return;
+	}
+
+	const voucherSize = parseInt(voucherSizeValue);
+
+	// Check if any relevant checkboxes are selected
+	const relevantSelectors = [
+		'#pills-srp-tabContent input[type="checkbox"]:checked',
+		'#pills-aps-tabContent input[type="checkbox"]:checked',
+		"#Util_ACon:checked",
+		"#Util_Fridge:checked",
+		"#Util_Micro:checked",
+	];
+
+	const isAnyRelevantSelected = relevantSelectors.some((selector) => document.querySelector(selector));
+
+	// If no relevant checkbox is selected, clear the `otherElectric` span
+	if (!isAnyRelevantSelected) {
+		document.getElementById("otherElectric").textContent = "";
+		return;
+	}
+
+	// Calculate the other electric fee if relevant inputs are selected
+	const otherElectricFee = baseFees[provider]?.[unitType]?.voucherSizeFees[voucherSize] || 0;
+
+	// Update the `otherElectric` span in the DOM
+	document.getElementById("otherElectric").textContent = `$${otherElectricFee.toLocaleString()}`;
+}
+
+// Attach event listeners and initialize on DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () => {
+	displayPaymentStandard(); // Initialize payment standard display
+	calculateAffordability(); // Initialize affordability calculations
+	enforceSingleSelection(); // Enforce single selection for utilities
+	updateOtherElectric(); // Initialize otherElectric span
+});
+
+// Attach event listeners to all relevant inputs
+const relevantInputs = [
+	...document.querySelectorAll('#pills-srp-tabContent input[type="checkbox"]'),
+	...document.querySelectorAll('#pills-aps-tabContent input[type="checkbox"]'),
+	document.getElementById("Util_ACon"),
+	document.getElementById("Util_Fridge"),
+	document.getElementById("Util_Micro"),
+];
+
+relevantInputs.forEach((input) => {
+	input.addEventListener("change", updateOtherElectric);
+});
+
+// Attach event listeners to dynamically update `otherElectric`
+document.getElementById("voucherSizeSelect").addEventListener("change", updateOtherElectric);
+
+document.querySelectorAll('button[data-bs-toggle="tab"]').forEach((tab) => {
+	tab.addEventListener("shown.bs.tab", () => {
+		updateOtherElectric();
+	});
+});
+
+// Reset form
+function resetForm() {
+	document.getElementById("voucherSizeSelect").value = "";
+	document.getElementById("zipCodeSelect").value = "";
+	document.getElementById("monthlyAdjustedIncome").value = "";
+	document.getElementById("contractRent").value = "";
+	document.getElementById("totalTenantPayment").value = "";
+	document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach((input) => (input.checked = false));
+	document.getElementById("paymentStandard").innerHTML = `<h6>Please select both Voucher Size and Zip Code to see the Payment Standard.</h6>`;
+}
+
+// Event listeners
 document.getElementById("voucherSizeSelect").addEventListener("change", () => {
 	displayPaymentStandard();
 	calculateAffordability();
+	updateOtherElectric();
 });
 
 document.getElementById("zipCodeSelect").addEventListener("change", () => {
@@ -389,23 +455,11 @@ document.getElementById("contractRent").addEventListener("input", () => {
 	calculateAffordability();
 });
 
-// Event listener for radio buttons and checkboxes
 document.addEventListener("change", (e) => {
-	if (e.target.matches('input[type="radio"], input[type="checkbox"]')) {
+	if (e.target.matches('input[type="checkbox"]')) {
 		calculateAffordability();
 	}
 });
-
-// Reset form functionality
-function resetForm() {
-	document.getElementById("voucherSizeSelect").value = "";
-	document.getElementById("zipCodeSelect").value = "";
-	document.getElementById("monthlyAdjustedIncome").value = "";
-	document.getElementById("contractRent").value = "";
-	document.getElementById("totalTenantPayment").value = "";
-	document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach((input) => (input.checked = false));
-	document.getElementById("paymentStandard").innerHTML = `<h6>Please select both Voucher Size and Zip Code to see the Payment Standard.</h6>`;
-}
 
 document.getElementById("startOver").addEventListener("click", resetForm);
 

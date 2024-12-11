@@ -84,20 +84,20 @@
       </div>
 
       <!-- Provider Tabs -->
-      <div class="col-12" id="utilitySelection">
+      <div class="col-12 mt-5" id="electricUtilities">
         <nav>
           <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <button class="nav-link active" id="nav-srp-tab" data-bs-toggle="tab" data-bs-target="#srp" type="button"
               role="tab" aria-controls="srp" aria-selected="true">SRP</button>
             <button class="nav-link" id="nav-aps-tab" data-bs-toggle="tab" data-bs-target="#aps" type="button"
-              role="tab" aria-controls="aps" aria-selected="false">APS</button>
+              role="tab" aria-controls="aps" aria-selected="false" tabindex="-1">APS</button>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
 
           <!-- SRP Tab Pane -->
           <div class="tab-pane fade show active" id="srp" role="tabpanel" aria-labelledby="nav-srp-tab" tabindex="0">
-            <h6 class="mt-3">Which of the following describes the unit best?</h6>
+            <h6 class="mt-3">Which of the utilities below are the family's responsibility to pay?</h6>
             <ul class="nav nav-pills mt-3" id="pills-srp-tab" role="tablist">
               <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="pills-srp-sfd-tab" data-bs-toggle="pill"
@@ -106,7 +106,8 @@
               </li>
               <li class="nav-item" role="presentation">
                 <button class="nav-link" id="pills-srp-mf-tab" data-bs-toggle="pill" data-bs-target="#pills-srp-mf"
-                  type="button" role="tab" aria-controls="pills-srp-mf" aria-selected="false">Multifamily</button>
+                  type="button" role="tab" aria-controls="pills-srp-mf" aria-selected="false"
+                  tabindex="-1">Multifamily/Apartment</button>
               </li>
             </ul>
             <div class="tab-content" id="pills-srp-tabContent">
@@ -121,115 +122,37 @@
                       <thead>
                         <tr>
                           <th scope="col">Utility</th>
-                          <th scope="col" class="text-center">Natural Gas</th>
-                          <th scope="col" class="text-center">Electric</th>
                         </tr>
                       </thead>
                       <tbody>
                         <!-- Heating -->
                         <tr>
-                          <th scope="row">Heating</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_SFD_heating"
-                                id="SRP_SFD_HeatNatGas" value="naturalGas">
-                              <label class="form-check-label ms-2" for="SRP_SFD_HeatNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_SFD_heating"
-                                id="SRP_SFD_HeatElectric" value="electric">
-                              <label class="form-check-label ms-2" for="SRP_SFD_HeatElectric">Electric</label>
+                              <input class="form-check-input" type="checkbox" name="SRP_SFD_heating"
+                                id="SRP_SFD_heating" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="SRP_SFD_heating">Heating</label>
                             </div>
                           </td>
                         </tr>
                         <!-- Cooking -->
                         <tr>
-                          <th scope="row">Cooking</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_SFD_cooking"
-                                id="SRP_SFD_CookNatGas" value="naturalGas">
-                              <label class="form-check-label ms-2" for="SRP_SFD_CookNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_SFD_cooking"
-                                id="SRP_SFD_CookElectric" value="electric">
-                              <label class="form-check-label ms-2" for="SRP_SFD_CookElectric">Electric</label>
+                              <input class="form-check-input" type="checkbox" name="SRP_SFD_cooking"
+                                id="SRP_SFD_cooking" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="SRP_SFD_cooking">Cooking</label>
                             </div>
                           </td>
                         </tr>
                         <!-- Water Heating -->
                         <tr>
-                          <th scope="row">Water Heating</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_SFD_waterHeating"
-                                id="SRP_SFD_WaterNatGas" value="naturalGas">
-                              <label class="form-check-label ms-2" for="SRP_SFD_WaterNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_SFD_waterHeating"
-                                id="SRP_SFD_WaterElectric" value="electric">
-                              <label class="form-check-label ms-2" for="SRP_SFD_WaterElectric">Electric</label>
-                            </div>
-                          </td>
-                        </tr>
-                        <!-- Additional Utilities (Water, Sewer, Trash, etc.) -->
-                        <tr>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_SFD_Water">
-                              <label class="form-check-label ms-2" for="SRP_SFD_Water">
-                                Water
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_SFD_Sewer">
-                              <label class="form-check-label ms-2" for="SRP_SFD_Sewer">
-                                Sewer
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_SFD_Trash">
-                              <label class="form-check-label ms-2" for="SRP_SFD_Trash">
-                                Trash
-                              </label>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_SFD_ACon">
-                              <label class="form-check-label ms-2" for="SRP_SFD_ACon">
-                                Air Conditioning
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_SFD_Fridge">
-                              <label class="form-check-label ms-2" for="SRP_SFD_Fridge">
-                                Refrigerator
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_SFD_Micro">
-                              <label class="form-check-label ms-2" for="SRP_SFD_Micro">
-                                Range/Microwave
-                              </label>
+                              <input class="form-check-input" type="checkbox" name="SRP_SFD_waterHeating"
+                                id="SRP_SFD_waterHeating" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="SRP_SFD_waterHeating">Water
+                                Heating</label>
                             </div>
                           </td>
                         </tr>
@@ -243,121 +166,43 @@
               <div class="tab-pane fade" id="pills-srp-mf" role="tabpanel" aria-labelledby="pills-srp-mf-tab"
                 tabindex="0">
                 <div class="col-12 col-xl-8">
-                  <h6 class="mt-5">SRP Utility Table (Multifamily)</h6>
+                  <h6 class="mt-5">SRP Utility Table (Multifamily/Apartment)</h6>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
                         <tr>
                           <th scope="col">Utility</th>
-                          <th scope="col" class="text-center">Natural Gas</th>
-                          <th scope="col" class="text-center">Electric</th>
                         </tr>
                       </thead>
                       <tbody>
                         <!-- Heating -->
                         <tr>
-                          <th scope="row">Heating</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_MF_heating" id="SRP_MF_HeatNatGas"
+                              <input class="form-check-input" type="checkbox" name="SRP_MF_heating" id="SRP_MF_heating"
                                 value="naturalGas">
-                              <label class="form-check-label ms-2" for="SRP_MF_HeatNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_MF_heating"
-                                id="SRP_MF_HeatElectric" value="electric">
-                              <label class="form-check-label ms-2" for="SRP_MF_HeatElectric">Electric</label>
+                              <label class="form-check-label ms-2 fw-bold" for="SRP_MF_heating">Heating</label>
                             </div>
                           </td>
                         </tr>
                         <!-- Cooking -->
                         <tr>
-                          <th scope="row">Cooking</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_MF_cooking" id="SRP_MF_CookNatGas"
+                              <input class="form-check-input" type="checkbox" name="SRP_MF_cooking" id="SRP_MF_cooking"
                                 value="naturalGas">
-                              <label class="form-check-label ms-2" for="SRP_MF_CookNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_MF_cooking"
-                                id="SRP_MF_CookElectric" value="electric">
-                              <label class="form-check-label ms-2" for="SRP_MF_CookElectric">Electric</label>
+                              <label class="form-check-label ms-2 fw-bold" for="SRP_MF_cooking">Cooking</label>
                             </div>
                           </td>
                         </tr>
                         <!-- Water Heating -->
                         <tr>
-                          <th scope="row">Water Heating</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_MF_waterHeating"
-                                id="SRP_MF_WaterNatGas" value="naturalGas">
-                              <label class="form-check-label ms-2" for="SRP_MF_WaterNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="SRP_MF_waterHeating"
-                                id="SRP_MF_WaterElectric" value="electric">
-                              <label class="form-check-label ms-2" for="SRP_MF_WaterElectric">Electric</label>
-                            </div>
-                          </td>
-                        </tr>
-                        <!-- Additional Utilities (Water, Sewer, Trash, etc.) -->
-                        <tr>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_MF_Water">
-                              <label class="form-check-label ms-2" for="SRP_MF_Water">
-                                Water
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_MF_Sewer">
-                              <label class="form-check-label ms-2" for="SRP_MF_Sewer">
-                                Sewer
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_MF_Trash">
-                              <label class="form-check-label ms-2" for="SRP_MF_Trash">
-                                Trash
-                              </label>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_MF_ACon">
-                              <label class="form-check-label ms-2" for="SRP_MF_ACon">
-                                Air Conditioning
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_MF_Fridge">
-                              <label class="form-check-label ms-2" for="SRP_MF_Fridge">
-                                Refrigerator
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="SRP_MF_Micro">
-                              <label class="form-check-label ms-2" for="SRP_MF_Micro">
-                                Range/Microwave
-                              </label>
+                              <input class="form-check-input" type="checkbox" name="SRP_MF_waterHeating"
+                                id="SRP_MF_waterHeating" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="SRP_MF_waterHeating">Water
+                                Heating</label>
                             </div>
                           </td>
                         </tr>
@@ -369,9 +214,10 @@
 
             </div>
           </div>
+
           <!-- APS Tab Pane -->
           <div class="tab-pane fade" id="aps" role="tabpanel" aria-labelledby="nav-aps-tab" tabindex="0">
-            <h6 class="mt-3">Which of the following describes the unit best?</h6>
+            <h6 class="mt-3">Which of the utilities below are the family's responsibility to pay?</h6>
             <ul class="nav nav-pills mt-3" id="pills-aps-tab" role="tablist">
               <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="pills-aps-sfd-tab" data-bs-toggle="pill"
@@ -380,7 +226,8 @@
               </li>
               <li class="nav-item" role="presentation">
                 <button class="nav-link" id="pills-aps-mf-tab" data-bs-toggle="pill" data-bs-target="#pills-aps-mf"
-                  type="button" role="tab" aria-controls="pills-aps-mf" aria-selected="false">Multifamily</button>
+                  type="button" role="tab" aria-controls="pills-aps-mf" aria-selected="false"
+                  tabindex="-1">Multifamily/Apartment</button>
               </li>
             </ul>
             <div class="tab-content" id="pills-aps-tabContent">
@@ -395,115 +242,36 @@
                       <thead>
                         <tr>
                           <th scope="col">Utility</th>
-                          <th scope="col" class="text-center">Natural Gas</th>
-                          <th scope="col" class="text-center">Electric</th>
                         </tr>
                       </thead>
                       <tbody>
                         <!-- Heating -->
                         <tr>
-                          <th scope="row">Heating</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_SFD_heating"
-                                id="APS_SFD_HeatNatGas" value="naturalGas">
-                              <label class="form-check-label ms-2" for="APS_SFD_HeatNatGas">Natural Gas</label>
+                              <input class="form-check-input" type="checkbox" name="APS_SFD_heating"
+                                id="APS_SFD_heating" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="APS_SFD_heating">Heating</label>
                             </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_SFD_heating"
-                                id="APS_SFD_HeatElectric" value="electric">
-                              <label class="form-check-label ms-2" for="APS_SFD_HeatElectric">Electric</label>
-                            </div>
-                          </td>
-                        </tr>
-                        <!-- Cooking -->
+                          </td </tr>
+                          <!-- Cooking -->
                         <tr>
-                          <th scope="row">Cooking</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_SFD_cooking"
-                                id="APS_SFD_CookNatGas" value="naturalGas">
-                              <label class="form-check-label ms-2" for="APS_SFD_CookNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_SFD_cooking"
-                                id="APS_SFD_CookElectric" value="electric">
-                              <label class="form-check-label ms-2" for="APS_SFD_CookElectric">Electric</label>
+                              <input class="form-check-input" type="checkbox" name="APS_SFD_cooking"
+                                id="APS_SFD_cooking" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="APS_SFD_cooking">Cooking</label>
                             </div>
                           </td>
                         </tr>
                         <!-- Water Heating -->
                         <tr>
-                          <th scope="row">Water Heating</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_SFD_waterHeating"
-                                id="APS_SFD_WaterNatGas" value="naturalGas">
-                              <label class="form-check-label ms-2" for="APS_SFD_WaterNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_SFD_waterHeating"
-                                id="APS_SFD_WaterElectric" value="electric">
-                              <label class="form-check-label ms-2" for="APS_SFD_WaterElectric">Electric</label>
-                            </div>
-                          </td>
-                        </tr>
-                        <!-- Additional Utilities (Water, Sewer, Trash, etc.) -->
-                        <tr>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_SFD_Water">
-                              <label class="form-check-label ms-2" for="APS_SFD_Water">
-                                Water
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_SFD_Sewer">
-                              <label class="form-check-label ms-2" for="APS_SFD_Sewer">
-                                Sewer
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_SFD_Trash">
-                              <label class="form-check-label ms-2" for="APS_SFD_Trash">
-                                Trash
-                              </label>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_SFD_ACon">
-                              <label class="form-check-label ms-2" for="APS_SFD_ACon">
-                                Air Conditioning
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_SFD_Fridge">
-                              <label class="form-check-label ms-2" for="APS_SFD_Fridge">
-                                Refrigerator
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_SFD_Micro">
-                              <label class="form-check-label ms-2" for="APS_SFD_Micro">
-                                Range/Microwave
-                              </label>
+                              <input class="form-check-input" type="checkbox" name="APS_SFD_waterHeating"
+                                id="APS_SFD_waterHeating" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="APS_SFD_waterHeating">Water
+                                Heating</label>
                             </div>
                           </td>
                         </tr>
@@ -517,121 +285,43 @@
               <div class="tab-pane fade" id="pills-aps-mf" role="tabpanel" aria-labelledby="pills-aps-mf-tab"
                 tabindex="0">
                 <div class="col-12 col-xl-8">
-                  <h6 class="mt-5">APS Utility Table (Multifamily)</h6>
+                  <h6 class="mt-5">APS Utility Table (Multifamily/Apartment)</h6>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
                         <tr>
                           <th scope="col">Utility</th>
-                          <th scope="col" class="text-center">Natural Gas</th>
-                          <th scope="col" class="text-center">Electric</th>
                         </tr>
                       </thead>
                       <tbody>
                         <!-- Heating -->
                         <tr>
-                          <th scope="row">Heating</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_MF_heating" id="APS_MF_HeatNatGas"
+                              <input class="form-check-input" type="checkbox" name="APS_MF_heating" id="APS_MF_heating"
                                 value="naturalGas">
-                              <label class="form-check-label ms-2" for="APS_MF_HeatNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_MF_heating"
-                                id="APS_MF_HeatElectric" value="electric">
-                              <label class="form-check-label ms-2" for="APS_MF_HeatElectric">Electric</label>
+                              <label class="form-check-label ms-2 fw-bold" for="APS_MF_heating">Heating</label>
                             </div>
                           </td>
                         </tr>
                         <!-- Cooking -->
                         <tr>
-                          <th scope="row">Cooking</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_MF_cooking" id="APS_MF_CookNatGas"
+                              <input class="form-check-input" type="checkbox" name="APS_MF_cooking" id="APS_MF_cooking"
                                 value="naturalGas">
-                              <label class="form-check-label ms-2" for="APS_MF_CookNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_MF_cooking"
-                                id="APS_MF_CookElectric" value="electric">
-                              <label class="form-check-label ms-2" for="APS_MF_CookElectric">Electric</label>
+                              <label class="form-check-label ms-2 fw-bold" for="APS_MF_cooking">Cooking</label>
                             </div>
                           </td>
                         </tr>
                         <!-- Water Heating -->
                         <tr>
-                          <th scope="row">Water Heating</th>
                           <td>
                             <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_MF_waterHeating"
-                                id="APS_MF_WaterNatGas" value="naturalGas">
-                              <label class="form-check-label ms-2" for="APS_MF_WaterNatGas">Natural Gas</label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center">
-                              <input class="form-check-input" type="radio" name="APS_MF_waterHeating"
-                                id="APS_MF_WaterElectric" value="electric">
-                              <label class="form-check-label ms-2" for="APS_MF_WaterElectric">Electric</label>
-                            </div>
-                          </td>
-                        </tr>
-                        <!-- Additional Utilities (Water, Sewer, Trash, etc.) -->
-                        <tr>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_MF_Water">
-                              <label class="form-check-label ms-2" for="APS_MF_Water">
-                                Water
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_MF_Sewer">
-                              <label class="form-check-label ms-2" for="APS_MF_Sewer">
-                                Sewer
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_MF_Trash">
-                              <label class="form-check-label ms-2" for="APS_MF_Trash">
-                                Trash
-                              </label>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_MF_ACon">
-                              <label class="form-check-label ms-2" for="APS_MF_ACon">
-                                Air Conditioning
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_MF_Fridge">
-                              <label class="form-check-label ms-2" for="APS_MF_Fridge">
-                                Refrigerator
-                              </label>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                              <input class="form-check-input" type="checkbox" value="" id="APS_MF_Micro">
-                              <label class="form-check-label ms-2" for="APS_MF_Micro">
-                                Range/Microwave
-                              </label>
+                              <input class="form-check-input" type="checkbox" name="APS_MF_waterHeating"
+                                id="APS_MF_waterHeating" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="APS_MF_waterHeating">Water
+                                Heating</label>
                             </div>
                           </td>
                         </tr>
@@ -642,6 +332,205 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="col-12 mt-5" id="gasUtilities">
+        <nav>
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="nav-sw-tab" data-bs-toggle="tab" data-bs-target="#sw" type="button"
+              role="tab" aria-controls="sw" aria-selected="true">Southwest Gas</button>
+          </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+          <div class="tab-pane fade show active" id="sw" role="tabpanel" aria-labelledby="nav-sw-tab" tabindex="0">
+            <h6 class="mt-3">Which of the utilities below are the family's responsibility to pay?</h6>
+            <ul class="nav nav-pills mt-3" id="pills-sw-tab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="pills-sw-sfd-tab" data-bs-toggle="pill"
+                  data-bs-target="#pills-sw-sfd" type="button" role="tab" aria-controls="pills-sw-sfd"
+                  aria-selected="true">Single Family Detached</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-sw-mf-tab" data-bs-toggle="pill" data-bs-target="#pills-sw-mf"
+                  type="button" role="tab" aria-controls="pills-sw-mf" aria-selected="false"
+                  tabindex="-1">Multifamily/Apartment</button>
+              </li>
+            </ul>
+            <div class="tab-content" id="pills-sw-tabContent">
+
+              <!-- SW Single Family Detached -->
+              <div class="tab-pane fade show active" id="pills-sw-sfd" role="tabpanel"
+                aria-labelledby="pills-sw-sfd-tab" tabindex="0">
+                <div class="col-12 col-xl-8">
+                  <h6 class="mt-5">Single Family Detached</h6>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">Utility</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Heating -->
+                        <tr>
+                          <td>
+                            <div class="form-check d-flex align-items-center">
+                              <input class="form-check-input" type="checkbox" name="SWG_SFD_heating"
+                                id="SWG_SFD_heating" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="SWG_SFD_heating">Heating</label>
+                            </div>
+                          </td>
+                        </tr>
+                        <!-- Cooking -->
+                        <tr>
+                          <td>
+                            <div class="form-check d-flex align-items-center">
+                              <input class="form-check-input" type="checkbox" name="SWG_SFD_cooking"
+                                id="SWG_SFD_cooking" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="SWG_SFD_cooking">Cooking</label>
+                            </div>
+                          </td>
+                        </tr>
+                        <!-- Water Heating -->
+                        <tr>
+                          <td>
+                            <div class="form-check d-flex align-items-center">
+                              <input class="form-check-input" type="checkbox" name="SWG_SFD_waterHeating"
+                                id="SWG_SFD_waterHeating" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="SWG_SFD_waterHeating">Water
+                                Heating</label>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SW Multifamily -->
+              <div class="tab-pane fade" id="pills-sw-mf" role="tabpanel" aria-labelledby="pills-sw-mf-tab"
+                tabindex="0">
+                <div class="col-12 col-xl-8">
+                  <h6 class="mt-5">Multifamily/Apartment</h6>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">Utility</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <!-- Heating -->
+                        <tr>
+                          <td>
+                            <div class="form-check d-flex align-items-center">
+                              <input class="form-check-input" type="checkbox" name="SWG_MF_heating" id="SWG_MF_heating"
+                                value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="SWG_MF_heating">Heating</label>
+                            </div>
+                          </td>
+                        </tr>
+                        <!-- Cooking -->
+                        <tr>
+                          <td>
+                            <div class="form-check d-flex align-items-center">
+                              <input class="form-check-input" type="checkbox" name="SWG_MF_cooking" id="SWG_MF_cooking"
+                                value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="SWG_MF_cooking">Cooking</label>
+                            </div>
+                          </td>
+                        </tr>
+                        <!-- Water Heating -->
+                        <tr>
+                          <td>
+                            <div class="form-check d-flex align-items-center">
+                              <input class="form-check-input" type="checkbox" name="SWG_MF_waterHeating"
+                                id="SWG_MF_waterHeating" value="naturalGas">
+                              <label class="form-check-label ms-2 fw-bold" for="SW_MF_WaterNatGas">Water Heating</label>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 mt-5" id="additionalUtilities">
+        <!-- Additional Utilities (Water, Sewer, Trash, etc.) -->
+        <h6 class="mt-5">Additional Utilities</h6>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead></thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="form-check d-flex align-items-center justify-content-start">
+                    <input class="form-check-input" type="checkbox" value="" id="Util_ACon">
+                    <label class="form-check-label ms-2" for="Util_ACon">
+                      Air Conditioning, <span id="otherElectric"></span>
+                    </label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead></thead>
+            <tbody>              
+              <tr>
+                <td>
+                  <div class="form-check d-flex align-items-center justify-content-start">
+                    <input class="form-check-input" type="checkbox" value="" id="Util_Water">
+                    <label class="form-check-label ms-2" for="Util_Water">
+                      Water
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-check d-flex align-items-center justify-content-start">
+                    <input class="form-check-input" type="checkbox" value="" id="Util_Sewer">
+                    <label class="form-check-label ms-2" for="Util_Sewer">
+                      Sewer
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-check d-flex align-items-center justify-content-start">
+                    <input class="form-check-input" type="checkbox" value="" id="Util_Trash">
+                    <label class="form-check-label ms-2" for="Util_Trash">
+                      Trash
+                    </label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="form-check d-flex align-items-center justify-content-start">
+                    <input class="form-check-input" type="checkbox" value="" id="Util_Fridge">
+                    <label class="form-check-label ms-2" for="Util_Fridge">
+                      Refrigerator
+                    </label>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-check d-flex align-items-center justify-content-start">
+                    <input class="form-check-input" type="checkbox" value="" id="Util_Micro">
+                    <label class="form-check-label ms-2" for="Util_Micro">
+                      Range/Microwave
+                    </label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
