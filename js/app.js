@@ -263,8 +263,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 		});
 
-		totalUtilities.textContent = `$${currentTotalUtilities.toFixed(2)}`;
-		grossRent.textContent = `$${(baseGrossRent + currentTotalUtilities).toFixed(2)}`;
+		totalUtilities.textContent = `$${currentTotalUtilities.toFixed(0)}`;
+		grossRent.textContent = `$${(baseGrossRent + currentTotalUtilities).toFixed(0)}`;
 
 		// ensure tenant payment updates after utilities change
 		updateMonthlyAdjustedIncome();
@@ -285,14 +285,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		const isAffordable = adjustedTenantPayment <= maxAffordablePayment;
 
-		monthlyAdjustedIncomeDisplay.textContent = monthlyIncome > 0 ? `$${monthlyIncome.toFixed(2)}` : "N/A";
-		totalTenantPayment.textContent = adjustedTenantPayment > 0 ? `$${adjustedTenantPayment.toFixed(2)}` : "N/A";
+		monthlyAdjustedIncomeDisplay.textContent = monthlyIncome > 0 ? `$${monthlyIncome.toFixed(0)}` : "N/A";
+		totalTenantPayment.textContent = adjustedTenantPayment > 0 ? `$${adjustedTenantPayment.toFixed(0)}` : "N/A";
 
 		// only show affordability message if both monthlyIncome and contractRentValue are entered
 		if (contractRentValue > 0 && monthlyIncome > 0) {
 			isAffordableElement.innerHTML = isAffordable
 				? `<span class="text-success">Unit is affordable.</span>`
-				: `<span class="text-danger">Unit is not affordable.</span>`;
+				: `<span class="text-danger">Unit is <strong>NOT</strong> affordable.</span>`;
 		} else {
 			// clear the message if conditions are not met
 			isAffordableElement.innerHTML = "";
@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	function updateContractRent() {
 		const contractRent = parseFloat(contractRentInput.value) || 0;
-		contractRentDisplay.textContent = contractRent > 0 ? `$${contractRent.toFixed(2)}` : "N/A";
+		contractRentDisplay.textContent = contractRent > 0 ? `$${contractRent.toFixed(0)}` : "N/A";
 		baseGrossRent = contractRent;
 
 		// update utilities and tenant payment after changing contract rent
@@ -359,4 +359,40 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Initialize
 	updatePaymentStandard();
 	updateContractRent();
+});
+
+
+// print functionality
+function displayPrintButton() {
+	// Select the required inputs
+	let requiredInputs = document.querySelectorAll("#voucherSizeSelect, #zipCodeSelect, #monthlyAdjustedIncome, #contractRent");
+	let allFilled = true;
+
+	// Check if all required inputs have values
+	requiredInputs.forEach((input) => {
+		if (!input.value || input.value.trim() === "") {
+			allFilled = false;
+		}
+	});
+
+	// Get the print button
+	const printButton = document.getElementById("printForm");
+
+	// Show or hide the button based on whether all inputs are filled
+	if (allFilled) {
+		printButton.style.display = "flex";
+	} else {
+		printButton.style.display = "none";
+	}
+}
+
+document.querySelectorAll("#voucherSizeSelect, #zipCodeSelect, #monthlyAdjustedIncome, #contractRent").forEach((input) => {
+	input.addEventListener("input", displayPrintButton);
+});
+
+// Call the function initially to set the correct button visibility
+displayPrintButton();
+
+document.getElementById("printForm").addEventListener("click", () => {
+	window.print();
 });

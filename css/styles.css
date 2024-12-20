@@ -19,19 +19,18 @@ select.form-select {
 	margin-bottom: 1rem;
 }
 
-#printForm {
+/* #printForm {
   display: none;
-}
+} */
 
 /* Print CSS */
 @media print {
 	.form-inputs,
-	.make-select,
-	#electricUtilities,
-	#additionalUtilities,
-	#startOver,
-	#printForm,
   #backToTop {
 		display: none !important;
 	}
+
+  fieldset h4+h4 {
+    margin-top: 1rem;
+  }
 }
