@@ -19,10 +19,6 @@ select.form-select {
 	margin-bottom: 1rem;
 }
 
-/* #printForm {
-  display: none;
-} */
-
 /* Print CSS */
 @media print {
 	.form-inputs,

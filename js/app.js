@@ -361,6 +361,51 @@ document.addEventListener("DOMContentLoaded", function () {
 	updateContractRent();
 });
 
+// reset form
+function resetForm() {
+  // Reset all input fields
+  document.querySelectorAll("input").forEach((input) => {
+      if (input.type === "checkbox") {
+          input.checked = false;
+          input.disabled = false; // Re-enable any disabled checkboxes
+      } else {
+          input.value = "";
+      }
+  });
+
+  // Reset all dropdowns
+  document.querySelectorAll("select").forEach((select) => {
+      select.selectedIndex = 0;
+  });
+
+  // Clear all dynamically updated text content
+  const elementsToClear = [
+      "paymentStandard",
+      "voucherSizeSelection",
+      "zipCodeSelection",
+      "monthlyAdjustedIncomeDisplay",
+      "totalTenantPayment",
+      "grossRent",
+      "totalUtilities",
+      "contractRentDisplay",
+      "isAffordable",
+      "maxAllowableRent"
+  ];
+  elementsToClear.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = "";
+  });
+
+  // Reset any internal variables if needed
+  currentTotalUtilities = 0;
+  baseGrossRent = 0;
+
+  // Optionally, reinitialize calculations
+  updatePaymentStandard();
+  updateContractRent();
+}
+
+document.getElementById("resetForm").addEventListener("click", resetForm);
 
 // print functionality
 function displayPrintButton() {
