@@ -345,6 +345,39 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	});
 
+	// Define the checkSWGSelections function
+	function checkSWGSelections() {
+		// Get the state of SFD checkboxes
+		const swgSfdHeating = document.getElementById("swgSfdHeating").checked;
+		const swgSfdCooking = document.getElementById("swgSfdCooking").checked;
+		const swgSfdWaterHeater = document.getElementById("swgSfdWaterHeater").checked;
+
+		// Get the state of MFD checkboxes
+		const swgMfdHeating = document.getElementById("swgMfdHeating").checked;
+		const swgMfdCooking = document.getElementById("swgMfdCooking").checked;
+		const swgMfdWaterHeater = document.getElementById("swgMfdWaterHeater").checked;
+
+		const additionalUtilitiesElecChoice = document.getElementById("AdditionalUtilitiesElecChoice");
+
+		// Check if either all SFD checkboxes are checked OR all MFD checkboxes are checked
+		if ((swgSfdHeating && swgSfdCooking && swgSfdWaterHeater) || (swgMfdHeating && swgMfdCooking && swgMfdWaterHeater)) {
+			additionalUtilitiesElecChoice.classList.remove("d-none");
+			console.log("d-none removed");
+		} else {
+			additionalUtilitiesElecChoice.classList.add("d-none");
+			console.log("d-none added");
+		}
+	}
+
+	//Attach Listeners
+	document.getElementById("swgSfdHeating").addEventListener("change", checkSWGSelections);
+	document.getElementById("swgSfdCooking").addEventListener("change", checkSWGSelections);
+	document.getElementById("swgSfdWaterHeater").addEventListener("change", checkSWGSelections);
+
+	document.getElementById("swgMfdHeating").addEventListener("change", checkSWGSelections);
+	document.getElementById("swgMfdCooking").addEventListener("change", checkSWGSelections);
+	document.getElementById("swgMfdWaterHeater").addEventListener("change", checkSWGSelections);
+
 	// Event listeners
 	voucherSelect.addEventListener("change", updatePaymentStandard);
 	zipCodeSelect.addEventListener("change", updatePaymentStandard);
@@ -363,46 +396,46 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // reset form
 function resetForm() {
-  // Reset all input fields
-  document.querySelectorAll("input").forEach((input) => {
-      if (input.type === "checkbox") {
-          input.checked = false;
-          input.disabled = false; // Re-enable any disabled checkboxes
-      } else {
-          input.value = "";
-      }
-  });
+	// Reset all input fields
+	document.querySelectorAll("input").forEach((input) => {
+		if (input.type === "checkbox") {
+			input.checked = false;
+			input.disabled = false; // Re-enable any disabled checkboxes
+		} else {
+			input.value = "";
+		}
+	});
 
-  // Reset all dropdowns
-  document.querySelectorAll("select").forEach((select) => {
-      select.selectedIndex = 0;
-  });
+	// Reset all dropdowns
+	document.querySelectorAll("select").forEach((select) => {
+		select.selectedIndex = 0;
+	});
 
-  // Clear all dynamically updated text content
-  const elementsToClear = [
-      "paymentStandard",
-      "voucherSizeSelection",
-      "zipCodeSelection",
-      "monthlyAdjustedIncomeDisplay",
-      "totalTenantPayment",
-      "grossRent",
-      "totalUtilities",
-      "contractRentDisplay",
-      "isAffordable",
-      "maxAllowableRent"
-  ];
-  elementsToClear.forEach((id) => {
-      const element = document.getElementById(id);
-      if (element) element.textContent = "";
-  });
+	// Clear all dynamically updated text content
+	const elementsToClear = [
+		"paymentStandard",
+		"voucherSizeSelection",
+		"zipCodeSelection",
+		"monthlyAdjustedIncomeDisplay",
+		"totalTenantPayment",
+		"grossRent",
+		"totalUtilities",
+		"contractRentDisplay",
+		"isAffordable",
+		"maxAllowableRent",
+	];
+	elementsToClear.forEach((id) => {
+		const element = document.getElementById(id);
+		if (element) element.textContent = "";
+	});
 
-  // Reset any internal variables if needed
-  currentTotalUtilities = 0;
-  baseGrossRent = 0;
+	// Reset any internal variables if needed
+	currentTotalUtilities = 0;
+	baseGrossRent = 0;
 
-  // Optionally, reinitialize calculations
-  updatePaymentStandard();
-  updateContractRent();
+	// Optionally, reinitialize calculations
+	updatePaymentStandard();
+	updateContractRent();
 }
 
 document.getElementById("resetForm").addEventListener("click", resetForm);
