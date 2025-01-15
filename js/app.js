@@ -168,6 +168,22 @@ const airConditioningOverrides = {
 	},
 };
 
+// Add a scroll listener to toggle sticky section visibility
+window.addEventListener("scroll", () => {
+	const fieldset = document.querySelector("fieldset");
+	const stickyInfo = document.getElementById("stickyInfo");
+
+	if (fieldset && stickyInfo) {
+		const fieldsetBottom = fieldset.getBoundingClientRect().bottom;
+
+		if (fieldsetBottom < 0) {
+			stickyInfo.style.display = "block";
+		} else {
+			stickyInfo.style.display = "none";
+		}
+	}
+});
+
 document.addEventListener("DOMContentLoaded", function () {
 	// Define all variables once
 	const voucherSelect = document.getElementById("voucherSelect");
@@ -206,68 +222,165 @@ document.addEventListener("DOMContentLoaded", function () {
 		// Recalculate everything after payment standard change
 		updateUtilityValue();
 		updateMonthlyAdjustedIncome();
+		updateStickySection(); // Ensure the sticky section updates
 	}
 
 	// update utility value and gross rent
+	// Function to calculate the gross rent (including utilities)
+	function updateGrossRent(totalUtilityValue) {
+		const contractRentValue = parseFloat(contractRentInput.value) || 0;
+		const grossRentValue = contractRentValue + totalUtilityValue;
+		grossRent.textContent = `$${grossRentValue}`;
+		updateMonthlyAdjustedIncome(); // Recalculate affordability based on new gross rent
+		updateStickySection(); // Ensure the sticky section updates
+	}
+
+	// Function to calculate and update utility values
+	// Attach event listeners to all additional utility checkboxes
+	const additionalUtilityCheckboxes = document.querySelectorAll("#additionalUtililties input[type='checkbox']");
+	additionalUtilityCheckboxes.forEach((checkbox) => {
+		checkbox.addEventListener("change", updateUtilityValue);
+	});
+
+	// Include the calculation logic in updateUtilityValue
 	function updateUtilityValue() {
 		const voucherSize = voucherSelect.value;
-		if (!voucherSize) return;
+		if (!voucherSize) return; // Exit if voucher size is not selected
 
+		// Determine the active unit type (MF or SFD)
 		const unitType = document.querySelector("#utilitySelections .tab-pane.active").id.includes("multifamily-apartment") ? "MF" : "SFD";
 
+		// Start with utilities reset to 0
 		currentTotalUtilities = 0;
-		let srpFlatFeeApplied = false;
-		let swgFlatFeeApplied = false;
 
-		// get selected utilities for SRP, APS, SWG
+		// Handle SWG Flat Fee
+		let swgFlatFeeApplied = false; // Track if the SWG flat fee has already been applied
+		const swgCheckboxes = document.querySelectorAll("input[name='swg']:checked");
+		swgCheckboxes.forEach((checkbox) => {
+			if (!swgFlatFeeApplied) {
+				const swgFlatFee = baseFees.SWG[unitType]?.flatFee || 0;
+				currentTotalUtilities += swgFlatFee;
+				swgFlatFeeApplied = true; // Mark flat fee as applied
+			}
+		});
+
+		// Handle Add Utilities SRP and APS
+		const addUtilsAPS = document.getElementById("addUtilsAPS").checked;
+		const addUtilsSRP = document.getElementById("addUtilsSRP").checked;
+
+		if (addUtilsAPS) {
+			const apsFlatFee = baseFees.APS[unitType]?.flatFee || 0;
+			currentTotalUtilities += apsFlatFee;
+		}
+
+		if (addUtilsSRP) {
+			const srpFlatFee = baseFees.SRP[unitType]?.flatFee || 0;
+			currentTotalUtilities += srpFlatFee;
+		}
+
+		// Add selected utilities from utilitySelections (SRP, APS, SWG)
 		const selectedUtilities = document.querySelectorAll("input[name='srp']:checked, input[name='aps']:checked, input[name='swg']:checked");
 		selectedUtilities.forEach((checkbox) => {
 			const utilityProvider = checkbox.name.toUpperCase();
 			const utilityCategory = checkbox.value;
 
-			if (utilityProvider === "SRP" && !srpFlatFeeApplied) {
-				currentTotalUtilities += baseFees.SRP[unitType]?.flatFee || 0;
-				srpFlatFeeApplied = true;
-			}
-
-			if (utilityProvider === "SWG" && !swgFlatFeeApplied) {
-				currentTotalUtilities += baseFees.SWG[unitType]?.flatFee || 0;
-				swgFlatFeeApplied = true;
-			}
-
 			const allowance = utilityAllowances[utilityProvider]?.[unitType]?.[utilityCategory]?.[voucherSize];
 			if (allowance !== undefined) currentTotalUtilities += allowance;
 		});
 
-		// additional utilities
+		// Add values from #additionalUtililties checkboxes
 		const idToKeyMap = {
 			addUtilFridge: "refrigerator",
 			addUtilRangeMicro: "rangeMicrowave",
 			addUtilAcon: "airConditioning",
+			addUtilWater: "water",
+			addUtilSewer: "sewer",
+			addUtilTrash: "trash",
 			otherElec: "otherElectric",
 		};
 
-		const additionalUtilityCheckboxes = document.querySelectorAll("#additionalUtililties input[type='checkbox']:checked");
 		additionalUtilityCheckboxes.forEach((checkbox) => {
-			const utilityType = idToKeyMap[checkbox.id] || checkbox.id.replace("addUtil", "").toLowerCase();
+			if (checkbox.checked) {
+				const utilityType = idToKeyMap[checkbox.id];
+				if (utilityType) {
+					let additionalUtilityValue;
 
-			if (utilityType === "airConditioning") {
-				const acValue = airConditioningOverrides.SRP[unitType]?.[voucherSize];
-				if (acValue !== undefined) currentTotalUtilities += acValue;
-			} else if (utilityType === "otherElectric") {
-				const oeValue = baseFees.SRP[unitType]?.otherElectric?.[voucherSize];
-				if (oeValue !== undefined) currentTotalUtilities += oeValue;
-			} else {
-				const additionalUtilityValue = additionalUtilities[utilityType]?.[voucherSize];
-				if (additionalUtilityValue !== undefined) currentTotalUtilities += additionalUtilityValue;
+					// Check the selected provider for air conditioning and other utilities
+					const provider = document.getElementById("addUtilsAPS").checked ? "APS" : document.getElementById("addUtilsSRP").checked ? "SRP" : null;
+
+					if (utilityType === "airConditioning" && provider) {
+						// Use the correct air conditioning override for the selected provider
+						additionalUtilityValue = airConditioningOverrides[provider]?.[unitType]?.[voucherSize];
+					} else if (utilityType === "otherElectric" && provider) {
+						// Use the correct otherElectric values for the selected provider
+						additionalUtilityValue = baseFees[provider]?.[unitType]?.otherElectric?.[voucherSize];
+					} else {
+						// Standard additional utilities
+						additionalUtilityValue = additionalUtilities[utilityType]?.[voucherSize];
+					}
+
+					if (additionalUtilityValue !== undefined) {
+						currentTotalUtilities += additionalUtilityValue;
+					}
+				}
 			}
 		});
 
+		// Update the Total Utilities display
 		totalUtilities.textContent = `$${currentTotalUtilities.toFixed(0)}`;
-		grossRent.textContent = `$${(baseGrossRent + currentTotalUtilities).toFixed(0)}`;
 
-		// ensure tenant payment updates after utilities change
-		updateMonthlyAdjustedIncome();
+		// Update Gross Rent
+		updateGrossRent(currentTotalUtilities);
+		updateStickySection(); // Ensure the sticky section updates
+	}
+
+	// Update Sticky Section
+	function updateStickySection() {
+		const stickyPaymentStandard = document.getElementById("stickyPaymentStandard");
+		const stickyTenantPayment = document.getElementById("stickyTenantPayment"); // New element
+		const stickyGrossRent = document.getElementById("stickyGrossRent");
+		const stickyIsAffordable = document.getElementById("stickyIsAffordable");
+
+		if (stickyPaymentStandard) {
+			stickyPaymentStandard.textContent = paymentStandardDisplay.textContent;
+		}
+
+		if (stickyTenantPayment) {
+			stickyTenantPayment.textContent = totalTenantPayment.textContent; // Update with Tenant Payment
+		}
+
+		if (stickyGrossRent) {
+			stickyGrossRent.textContent = grossRent.textContent;
+		}
+
+		if (stickyIsAffordable) {
+			stickyIsAffordable.innerHTML = isAffordableElement.innerHTML;
+		}
+	}
+
+	//toggles event listeners
+	function toggleUtilitySections() {
+		const addUtilsAPS = document.getElementById("addUtilsAPS").checked;
+		const addUtilsSRP = document.getElementById("addUtilsSRP").checked;
+
+		// Get the elements to hide or show
+		const srpSections = [document.getElementById("srpSfdOptions"), document.getElementById("srpMfdOptions")];
+		const apsSections = [document.getElementById("apsSfdOptions"), document.getElementById("apsMfdOptions")];
+
+		// Hide or show sections based on the selected utility
+		if (addUtilsAPS) {
+			// Hide SRP sections and show APS sections
+			srpSections.forEach((section) => section.classList.add("d-none"));
+			apsSections.forEach((section) => section.classList.remove("d-none"));
+		} else if (addUtilsSRP) {
+			// Hide APS sections and show SRP sections
+			apsSections.forEach((section) => section.classList.add("d-none"));
+			srpSections.forEach((section) => section.classList.remove("d-none"));
+		} else {
+			// If neither is selected, show all sections
+			srpSections.forEach((section) => section.classList.remove("d-none"));
+			apsSections.forEach((section) => section.classList.remove("d-none"));
+		}
 	}
 
 	// update monthly adjusted income and check affordability
@@ -288,15 +401,16 @@ document.addEventListener("DOMContentLoaded", function () {
 		monthlyAdjustedIncomeDisplay.textContent = monthlyIncome > 0 ? `$${monthlyIncome.toFixed(0)}` : "N/A";
 		totalTenantPayment.textContent = adjustedTenantPayment > 0 ? `$${adjustedTenantPayment.toFixed(0)}` : "N/A";
 
-		// only show affordability message if both monthlyIncome and contractRentValue are entered
 		if (contractRentValue > 0 && monthlyIncome > 0) {
 			isAffordableElement.innerHTML = isAffordable
 				? `<span class="text-success">Unit is affordable.</span>`
 				: `<span class="text-danger">Unit is <strong>NOT</strong> affordable.</span>`;
 		} else {
-			// clear the message if conditions are not met
 			isAffordableElement.innerHTML = "";
 		}
+
+		// Update the sticky section with the latest values
+		updateStickySection();
 	}
 
 	function updateContractRent() {
@@ -309,35 +423,48 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 	function handleUtilityExclusion(e) {
-		const changedCheckbox = e.target;
-		const category = changedCheckbox.value; // No lowercase conversion
+		const changedCheckbox = e.target; // The checkbox that triggered the event
+		const category = changedCheckbox.value; // The utility category (e.g., "heating", "cooking", "waterHeater")
 
-		// include "waterHeater" as it is, along with "heating" and "cooking"
-		if (category === "heating" || category === "cooking" || category === "waterHeater") {
-			// select all checkboxes in #utilitySelections with the same value (category)
-			// and not inside #additionalUtililties
-			const allSimilar = document.querySelectorAll("#utilitySelections input[type='checkbox'][value='" + category + "']:not(#additionalUtililties input)");
+		// Select all checkboxes of the same category
+		const allSimilar = document.querySelectorAll(`#utilitySelections input[type='checkbox'][value='${category}']`);
 
-			if (changedCheckbox.checked) {
-				// disable all other checkboxes of the same category
-				allSimilar.forEach((cb) => {
-					if (cb !== changedCheckbox && !cb.closest("#additionalUtililties")) {
-						cb.disabled = true;
+		if (changedCheckbox.checked) {
+			// Disable all other checkboxes of the same category
+			allSimilar.forEach((cb) => {
+				if (cb !== changedCheckbox) {
+					cb.disabled = true;
+
+					// Update the label styles for the disabled checkbox
+					const label = document.querySelector(`label[for='${cb.id}']`);
+					if (label) {
+						label.classList.remove("btn-outline-primary");
+						label.classList.add("btn-outline-secondary");
 					}
-				});
-			} else {
-				// if unchecked, re-enable other checkboxes of the same category
-				allSimilar.forEach((cb) => {
-					if (cb !== changedCheckbox && !cb.closest("#additionalUtililties")) {
-						cb.disabled = false;
+				}
+			});
+		} else {
+			// Re-enable all checkboxes of the same category if the changed one is unchecked
+			allSimilar.forEach((cb) => {
+				if (cb !== changedCheckbox) {
+					cb.disabled = false;
+
+					// Restore the label styles for the re-enabled checkbox
+					const label = document.querySelector(`label[for='${cb.id}']`);
+					if (label) {
+						label.classList.remove("btn-outline-secondary");
+						label.classList.add("btn-outline-primary");
 					}
-				});
-			}
+				}
+			});
 		}
+
+		// Recalculate utilities and gross rent whenever any utility checkbox is changed
+		updateUtilityValue();
 	}
 
 	// attach the handleUtilityExclusion event listener to utility checkboxes, excluding #additionalUtililties
-	const mainUtilityCheckboxes = document.querySelectorAll("#utilitySelections input[type='checkbox']");
+	const mainUtilityCheckboxes = document.querySelectorAll("#utilitySelections input[type='radio']");
 	mainUtilityCheckboxes.forEach((checkbox) => {
 		// Only attach if it's not inside #additionalUtililties
 		if (!checkbox.closest("#additionalUtililties")) {
@@ -345,48 +472,30 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 	});
 
-	// Define the checkSWGSelections function
-	function checkSWGSelections() {
-		// Get the state of SFD checkboxes
-		const swgSfdHeating = document.getElementById("swgSfdHeating").checked;
-		const swgSfdCooking = document.getElementById("swgSfdCooking").checked;
-		const swgSfdWaterHeater = document.getElementById("swgSfdWaterHeater").checked;
-
-		// Get the state of MFD checkboxes
-		const swgMfdHeating = document.getElementById("swgMfdHeating").checked;
-		const swgMfdCooking = document.getElementById("swgMfdCooking").checked;
-		const swgMfdWaterHeater = document.getElementById("swgMfdWaterHeater").checked;
-
-		const additionalUtilitiesElecChoice = document.getElementById("AdditionalUtilitiesElecChoice");
-
-		// Check if either all SFD checkboxes are checked OR all MFD checkboxes are checked
-		if ((swgSfdHeating && swgSfdCooking && swgSfdWaterHeater) || (swgMfdHeating && swgMfdCooking && swgMfdWaterHeater)) {
-			additionalUtilitiesElecChoice.classList.remove("d-none");
-			console.log("d-none removed");
-		} else {
-			additionalUtilitiesElecChoice.classList.add("d-none");
-			console.log("d-none added");
-		}
-	}
-
-	//Attach Listeners
-	document.getElementById("swgSfdHeating").addEventListener("change", checkSWGSelections);
-	document.getElementById("swgSfdCooking").addEventListener("change", checkSWGSelections);
-	document.getElementById("swgSfdWaterHeater").addEventListener("change", checkSWGSelections);
-
-	document.getElementById("swgMfdHeating").addEventListener("change", checkSWGSelections);
-	document.getElementById("swgMfdCooking").addEventListener("change", checkSWGSelections);
-	document.getElementById("swgMfdWaterHeater").addEventListener("change", checkSWGSelections);
-
 	// Event listeners
+	document.getElementById("addUtilsAPS").addEventListener("change", toggleUtilitySections);
+	document.getElementById("addUtilsSRP").addEventListener("change", toggleUtilitySections);
+
+	document.getElementById("addUtilsAPS").addEventListener("change", updateUtilityValue);
+	document.getElementById("addUtilsSRP").addEventListener("change", updateUtilityValue);
+
 	voucherSelect.addEventListener("change", updatePaymentStandard);
 	zipCodeSelect.addEventListener("change", updatePaymentStandard);
 	monthlyAdjustedIncomeInput.addEventListener("input", updateMonthlyAdjustedIncome);
 	contractRentInput.addEventListener("input", updateContractRent);
 
-	const utilityCheckboxes = document.querySelectorAll("input[type='checkbox']");
+	// Attach the handleUtilityExclusion event listener to utility checkboxes
+	const utilityCheckboxes = document.querySelectorAll("#utilitySelections input[type='checkbox']");
 	utilityCheckboxes.forEach((checkbox) => {
-		checkbox.addEventListener("change", updateUtilityValue);
+		checkbox.addEventListener("change", handleUtilityExclusion);
+	});
+
+	// Use Bootstrap's `shown.bs.tab` event to handle home type selection
+	const homeTypeTabs = document.querySelectorAll("#homeTypeSelection .nav-link");
+	homeTypeTabs.forEach((tab) => {
+		tab.addEventListener("shown.bs.tab", () => {
+			updateUtilityValue(); // Recalculate utilities when the unit type changes
+		});
 	});
 
 	// Initialize
@@ -398,9 +507,16 @@ document.addEventListener("DOMContentLoaded", function () {
 function resetForm() {
 	// Reset all input fields
 	document.querySelectorAll("input").forEach((input) => {
-		if (input.type === "checkbox") {
+		if (input.type === "checkbox" || input.type === "radio") {
 			input.checked = false;
 			input.disabled = false; // Re-enable any disabled checkboxes
+
+			// Reset the label styles for checkboxes
+			const label = document.querySelector(`label[for='${input.id}']`);
+			if (label) {
+				label.classList.remove("btn-outline-secondary");
+				label.classList.add("btn-outline-primary");
+			}
 		} else {
 			input.value = "";
 		}
