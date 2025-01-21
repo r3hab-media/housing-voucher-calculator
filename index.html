@@ -13,13 +13,20 @@
 </head>
 
 <body>
+  <div id="stickyInfo" class="sticky-section">
+    <h4>Payment Standard: <span id="stickyPaymentStandard"></span></h4>
+    <h4>Gross Rent: <span id="stickyGrossRent"></span></h4>
+    <h4>Tenant Payment: <span id="stickyTenantPayment"></span></h4>
+    <h4 id="stickyIsAffordable"></h4>
+  </div>
   <div class="container pt-3">
-    <div class="row">
-      <div class="col-12">
-        
-      </div>
-    </div>
     <h2>Housing Voucher Calculator</h2>
+    <div class="form-check my-3">
+      <input type="checkbox" class="form-check-input" id="formDisclaimer">
+      <label for="formDisclaimer" class="form-check-label"><strong>Disclaimer:</strong> I understand that the
+        calculation above is based on the information provided and is not a guarantee of affordability. You must submit
+        a completed Housing Voucher Request for review by the City of Scottsdale Housing Authority.</label>
+    </div>
     <div class="row form-inputs">
       <small class="fst-italic text-danger">Please select Voucher Size and Zip Code to get started.</small>
       <div class="col-12 col-lg-6">
@@ -61,18 +68,19 @@
     <div class="row py-4">
       <div class="col-12">
         <fieldset class="border border-5 border-warning-subtle p-3">
-          <legend class="float-none w-auto px-2"><h3 class="fw-bold">Housing Voucher Information</h3></legend>
-            <h4>Voucher Size: <span id="voucherSizeSelection"></span></h4>
-            <h4>Zip Code: <span id="zipCodeSelection"></span></h4>
-            <h4>Payment Standard: <span id="paymentStandard"></span></h4>
-            <h4>Monthly Adjusted Income: <span id="monthlyAdjustedIncomeDisplay"></span></h4>
-            <h4>Total Utilities: <span id="totalUtilities">$0</span></h4>
-            <h4>Gross Rent (including utilities): <span id="grossRent"></span></h4>
-            <h4>Contract Rent: <span id="contractRentDisplay"></span></h4>
-            <h4>Tenant Payment: <span id="totalTenantPayment"></span></h4>
-            <h4 id="isAffordable"></h4>
+          <legend class="float-none w-auto px-2">
+            <h3 class="fw-bold">Housing Voucher Information</h3>
+          </legend>
+          <h4>Voucher Size: <span id="voucherSizeSelection"></span></h4>
+          <h4>Zip Code: <span id="zipCodeSelection"></span></h4>
+          <h4>Payment Standard: <span id="paymentStandard"></span></h4>
+          <h4>Monthly Adjusted Income: <span id="monthlyAdjustedIncomeDisplay"></span></h4>
+          <h4>Total Utilities: <span id="totalUtilities">$0</span></h4>
+          <h4>Gross Rent (including utilities): <span id="grossRent"></span></h4>
+          <h4>Contract Rent: <span id="contractRentDisplay"></span></h4>
+          <h4>Tenant Payment: <span id="totalTenantPayment"></span></h4>
+          <h4 id="isAffordable"></h4>
         </fieldset>
-        <h5 class="mt-3"><strong>Disclaimer:</strong> The calculation above is based on the information provided and is not a guarantee of affordability. You must submit a completed Housing Voucher Request for review by the City of Scottsdale Housing Authority.</h5>
       </div>
     </div>
     <div class="row mt-3 form-inputs">
@@ -91,15 +99,26 @@
     </div>
     <div class="row mt-5 form-inputs">
       <div class="col-12">
+        <h5>The following options require an electric company selection. Please select either APS or SRP to continue.
+        </h5>
+        <input type="radio" class="btn-check" name="AddUtilsElecChoice" id="addUtilsAPS" autocomplete="off">
+        <label class="btn btn-md btn-outline-primary" for="addUtilsAPS">APS</label>
+
+        <input type="radio" class="btn-check" name="AddUtilsElecChoice" id="addUtilsSRP" autocomplete="off">
+        <label class="btn btn-md btn-outline-primary" for="addUtilsSRP">SRP</label>
+      </div>
+    </div>
+    <div class="row mt-5 form-inputs">
+      <div class="col-12">
         <h5>What type of home are you inquiring about?</h5>
         <ul class="nav nav-pills mb-3" id="homeTypeSelection" role="tablist">
           <li class="nav-item" role="presentation">
-            <button class="nav-link active btn-lg" id="homeTypeMFA" data-bs-toggle="pill"
+            <button class="nav-link active btn-md" id="homeTypeMFA" data-bs-toggle="pill"
               data-bs-target="#multifamily-apartment" type="button" role="tab" aria-controls="multifamily-apartment"
               aria-selected="true">Multifamily/Apartment</button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link btn-lg" id="homeTypeSFD" data-bs-toggle="pill"
+            <button class="nav-link btn-md" id="homeTypeSFD" data-bs-toggle="pill"
               data-bs-target="#single-family-detached" type="button" role="tab" aria-controls="single-family-detached"
               aria-selected="false">Single Family Detached</button>
           </li>
@@ -110,49 +129,51 @@
             aria-labelledby="pills-home-tab" tabindex="0">
             <h6>Multifamily/Apartment Utility Options</h6>
             <div class="row">
-              <h4>SRP</h4>
-              <div class="col-12 col-lg-6">
+              <div class="col-12 mt-3" id="srpMfdOptions">
+                <h4>SRP</h4>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="srp" id="srpMfdHeating" value="heating">
-                  <label class="form-check-label" for="srpMfdHeating">Heating</label>
+                  <input class="btn-check" type="checkbox" name="srp" id="srpMfdHeating" value="heating">
+                  <label class="btn btn-md btn-outline-primary" for="srpMfdHeating">Heating</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="srp" id="srpMfdCooking" value="cooking">
-                  <label class="form-check-label" for="srpMfdCooking">Cooking</label>
+                  <input class="btn-check" type="checkbox" name="srp" id="srpMfdCooking" value="cooking">
+                  <label class="btn btn-md btn-outline-primary" for="srpMfdCooking">Cooking</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="srp" id="srpMfdWaterHeater" value="waterHeater">
-                  <label class="form-check-label" for="srpMfdWaterHeater">Water Heating</label>
-                </div>
-              </div>
-              <h4 class="mt-3">APS</h4>
-              <div class="col-12 col-lg-6">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="aps" id="apsMfdHeating" value="heating">
-                  <label class="form-check-label" for="apsMfdHeating">Heating</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="aps" id="apsMfdCooking" value="cooking">
-                  <label class="form-check-label" for="apsMfdCooking">Cooking</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="aps" id="apsMfdWaterHeater" value="waterHeater">
-                  <label class="form-check-label" for="apsMfdWaterHeater">Water Heating</label>
+                  <input class="btn-check" type="checkbox" name="srp" id="srpMfdWaterHeater" value="waterHeater">
+                  <label class="btn btn-md btn-outline-primary" for="srpMfdWaterHeater">Water Heating</label>
                 </div>
               </div>
-              <h4 class="mt-3">Southwest Gas</h4>
-              <div class="col-12 col-lg-6">
+
+              <div class="col-12 mt-3" id="apsMfdOptions">
+                <h4>APS</h4>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="swg" id="swgMfdHeating" value="heating">
-                  <label class="form-check-label" for="swgMfdHeating">Heating</label>
+                  <input class="btn-check" type="checkbox" name="aps" id="apsMfdHeating" value="heating">
+                  <label class="btn btn-md btn-outline-primary" for="apsMfdHeating">Heating</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="swg" id="swgMfdCooking" value="cooking">
-                  <label class="form-check-label" for="swgMfdCooking">Cooking</label>
+                  <input class="btn-check" type="checkbox" name="aps" id="apsMfdCooking" value="cooking">
+                  <label class="btn btn-md btn-outline-primary" for="apsMfdCooking">Cooking</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="swg" id="swgMfdWaterHeater" value="waterHeater">
-                  <label class="form-check-label" for="swgMfdWaterHeater">Water Heating</label>
+                  <input class="btn-check" type="checkbox" name="aps" id="apsMfdWaterHeater" value="waterHeater">
+                  <label class="btn btn-md btn-outline-primary" for="apsMfdWaterHeater">Water Heating</label>
+                </div>
+              </div>
+
+              <div class="col-12 mt-3" id="swgMfdOptions">
+                <h4>Southwest Gas</h4>
+                <div class="form-check form-check-inline">
+                  <input class="btn-check" type="checkbox" name="swg" id="swgMfdHeating" value="heating">
+                  <label class="btn btn-md btn-outline-primary" for="swgMfdHeating">Heating</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="btn-check" type="checkbox" name="swg" id="swgMfdCooking" value="cooking">
+                  <label class="btn btn-md btn-outline-primary" for="swgMfdCooking">Cooking</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="btn-check" type="checkbox" name="swg" id="swgMfdWaterHeater" value="waterHeater">
+                  <label class="btn btn-md btn-outline-primary" for="swgMfdWaterHeater">Water Heating</label>
                 </div>
               </div>
             </div>
@@ -162,49 +183,51 @@
             tabindex="0">
             <h6>Single Family Detached Utility Options</h6>
             <div class="row">
-              <h4>SRP</h4>
-              <div class="col-12 col-lg-6">
+              <div class="col-12 mt-3" id="srpSfdOptions">
+                <h4>SRP</h4>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="srp" id="srpSfdHeating" value="1">
-                  <label class="form-check-label" for="srpSfdHeating">Heating</label>
+                  <input class="btn-check" type="checkbox" name="srp" id="srpSfdHeating" value="1">
+                  <label class="btn btn-md btn-outline-primary" for="srpSfdHeating">Heating</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="srp" id="srpSfdCooking" value="2">
-                  <label class="form-check-label" for="srpSfdCooking">Cooking</label>
+                  <input class="btn-check" type="checkbox" name="srp" id="srpSfdCooking" value="2">
+                  <label class="btn btn-md btn-outline-primary" for="srpSfdCooking">Cooking</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="srp" id="srpSfdWaterHeater" value="3">
-                  <label class="form-check-label" for="srpSfdWaterHeater">Water Heating</label>
-                </div>
-              </div>
-              <h4 class="mt-3">APS</h4>
-              <div class="col-12 col-lg-6">
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="aps" id="apsSfdHeating" value="1">
-                  <label class="form-check-label" for="apsSfdHeating">Heating</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="aps" id="apsSfdCooking" value="2">
-                  <label class="form-check-label" for="apsSfdCooking">Cooking</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="aps" id="apsSfdWaterHeater" value="3">
-                  <label class="form-check-label" for="apsSfdWaterHeater">Water Heating</label>
+                  <input class="btn-check" type="checkbox" name="srp" id="srpSfdWaterHeater" value="3">
+                  <label class="btn btn-md btn-outline-primary" for="srpSfdWaterHeater">Water Heating</label>
                 </div>
               </div>
-              <h4 class="mt-3">Southwest Gas</h4>
-              <div class="col-12 col-lg-6">
+
+              <div class="col-12 mt-3" id="apsSfdOptions">
+                <h4>APS</h4>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="swg" id="swgSfdHeating" value="1">
-                  <label class="form-check-label" for="swgSfdHeating">Heating</label>
+                  <input class="btn-check" type="checkbox" name="aps" id="apsSfdHeating" value="1">
+                  <label class="btn btn-md btn-outline-primary" for="apsSfdHeating">Heating</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="swg" id="swgSfdCooking" value="2">
-                  <label class="form-check-label" for="swgSfdCooking">Cooking</label>
+                  <input class="btn-check" type="checkbox" name="aps" id="apsSfdCooking" value="2">
+                  <label class="btn btn-md btn-outline-primary" for="apsSfdCooking">Cooking</label>
                 </div>
                 <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="checkbox" name="swg" id="swgSfdWaterHeater" value="3">
-                  <label class="form-check-label" for="swgSfdWaterHeater">Water Heating</label>
+                  <input class="btn-check" type="checkbox" name="aps" id="apsSfdWaterHeater" value="3">
+                  <label class="btn btn-md btn-outline-primary" for="apsSfdWaterHeater">Water Heating</label>
+                </div>
+              </div>
+
+              <div class="col-12 mt-3" id="swgSfdOptions">
+                <h4>Southwest Gas</h4>
+                <div class="form-check form-check-inline">
+                  <input class="btn-check" type="checkbox" name="swg" id="swgSfdHeating" value="1">
+                  <label class="btn btn-md btn-outline-primary" for="swgSfdHeating">Heating</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="btn-check" type="checkbox" name="swg" id="swgSfdCooking" value="2">
+                  <label class="btn btn-md btn-outline-primary" for="swgSfdCooking">Cooking</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="btn-check" type="checkbox" name="swg" id="swgSfdWaterHeater" value="3">
+                  <label class="btn btn-md btn-outline-primary" for="swgSfdWaterHeater">Water Heating</label>
                 </div>
               </div>
             </div>
@@ -217,14 +240,14 @@
     <div class="row mt-5">
       <div class="col-12">
         <h4>Additional Utilities</h4>
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-6 mt-3">
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="addUtilAcon" value="addUtilities">
-            <label class="form-check-label" for="addUtilAcon">Air Conditioning</label>
+            <input class="btn-check" type="checkbox" id="addUtilAcon" value="addUtilities">
+            <label class="btn btn-md btn-outline-primary" for="addUtilAcon">Air Conditioning</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="otherElec" value="addUtilities">
-            <label class="form-check-label" for="otherElec">Other Electric</label>
+            <input class="btn-check" type="checkbox" id="otherElec" value="addUtilities">
+            <label class="btn btn-md btn-outline-primary" for="otherElec">Other Electric</label>
           </div>
         </div>
       </div>
@@ -233,33 +256,33 @@
       <div class="col-12">
         <div class="col-12">
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="addUtilWater" value="addUtilities">
-            <label class="form-check-label" for="addUtilWater">Water</label>
+            <input class="btn-check" type="checkbox" id="addUtilWater" value="addUtilities">
+            <label class="btn btn-md btn-outline-primary" for="addUtilWater">Water</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="addUtilSewer" value="addUtilities">
-            <label class="form-check-label" for="addUtilSewer">Sewer</label>
+            <input class="btn-check" type="checkbox" id="addUtilSewer" value="addUtilities">
+            <label class="btn btn-md btn-outline-primary" for="addUtilSewer">Sewer</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="addUtilTrash" value="addUtilities">
-            <label class="form-check-label" for="addUtilTrash">Trash</label>
+            <input class="btn-check" type="checkbox" id="addUtilTrash" value="addUtilities">
+            <label class="btn btn-md btn-outline-primary" for="addUtilTrash">Trash</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="addUtilFridge" value="addUtilities">
-            <label class="form-check-label" for="addUtilFridge">Refrigerator</label>
+            <input class="btn-check" type="checkbox" id="addUtilFridge" value="addUtilities">
+            <label class="btn btn-md btn-outline-primary" for="addUtilFridge">Refrigerator</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="addUtilRangeMicro" value="addUtilities">
-            <label class="form-check-label" for="addUtilRangeMicro">Range/Microwave</label>
+            <input class="btn-check" type="checkbox" id="addUtilRangeMicro" value="addUtilities">
+            <label class="btn btn-md btn-outline-primary" for="addUtilRangeMicro">Range/Microwave</label>
           </div>
         </div>
       </div>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-3 border-top border-primary-subtle">
       <div class="col-12">
-        <div class="d-inline-flex gap-1">
-          <button class="btn btn-lg btn-outline-primary" id="resetForm">Start Over</button>
-          <button class="btn btn-lg btn-outline-primary" id="printForm">Print</button>
+        <div class="d-inline-flex gap-1 my-3">
+          <button class="btn btn-md btn-outline-primary" id="resetForm">Start Over</button>
+          <button class="btn btn-md btn-outline-primary" id="printForm">Print</button>
         </div>
       </div>
     </div>
