@@ -204,6 +204,34 @@ document.addEventListener("DOMContentLoaded", function () {
 	let currentTotalUtilities = 0;
 	let baseGrossRent = 0;
 
+	const disclaimerCheckbox = document.getElementById("formDisclaimer");
+	const formElementsContainers = document.querySelectorAll(".form-inputs");
+
+	function toggleFormElements() {
+		const isEnabled = disclaimerCheckbox.checked;
+
+		// Iterate through all .form-inputs containers
+		formElementsContainers.forEach((container) => {
+			const formElements = container.querySelectorAll("input, select");
+
+			console.log("Form Elements Found:", formElements); // Debugging log
+
+			formElements.forEach((element) => {
+				// Do not disable the disclaimer checkbox itself
+				if (element !== disclaimerCheckbox) {
+					element.disabled = !isEnabled;
+					console.log(`Element: ${element.tagName} | ID: ${element.id} | Disabled: ${element.disabled}`); // Debugging log
+				}
+			});
+		});
+	}
+
+	// Initial state - disable all form elements
+	toggleFormElements();
+
+	// Add event listener to the disclaimer checkbox
+	disclaimerCheckbox.addEventListener("change", toggleFormElements);
+
 	// Update Payment Standard and Voucher Selection
 	function updatePaymentStandard() {
 		const selectedVoucher = voucherSelect.value;
